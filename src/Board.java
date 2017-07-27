@@ -1,29 +1,31 @@
 import java.awt.Color;
-import java.awt.Image;
-import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.text.html.HTMLDocument.Iterator;
 
 public class Board {
 	
-	private static ArrayList<Piece> board = new ArrayList<>();
+	private static HashMap<Integer, Piece> board;
 	private int WIDTH = 800;
 	private int HEIGHT = 800;
 	private int OFFSETHEIGHT = 25;
-	JFrame frame;
-	Piece movingPiece;
-	Piece destinationPiece;
-	boolean isSecond = false;
+	private JFrame frame;
+	private Piece movingPiece;
+	private Piece destinationPiece;
+	private boolean isSecond = false;
 	
 	public static void main(String[] args) {		
 		Board b = new Board();
-		b.setDefaultBoard(board);
+		b.setDefaultBoard();
+		//b.updatePossibleMoves(board);
 	}
 	
 	public Board() {
@@ -35,89 +37,71 @@ public class Board {
 	}
 			
 	//setDefaultBoard: takes arraylist of the board and clears it, then add's the default start to the game
-	public void setDefaultBoard(ArrayList<Piece> board){
-		board.clear();
-		board.add(0, new Piece(0, 0, Color.BLACK, pieceType.ROOK, 0));
-		board.add(1, new Piece(7, 0, Color.BLACK, pieceType.ROOK, 1));
-		board.add(2, new Piece(1, 0, Color.BLACK, pieceType.KNIGHT, 2));
-		board.add(3, new Piece(6, 0, Color.BLACK, pieceType.KNIGHT, 3));
-		board.add(4, new Piece(2, 0, Color.BLACK, pieceType.BISHOP, 4));
-		board.add(5, new Piece(5, 0, Color.BLACK, pieceType.BISHOP, 5));
-		board.add(6, new Piece(3, 0, Color.BLACK, pieceType.QUEEN, 6));
-		board.add(7, new Piece(4, 0, Color.BLACK, pieceType.KING, 7));
+	private void setDefaultBoard(){
+		board = new HashMap<>();
+		//(int row, Column col, Color color, pieceType type)
+		board.put(Column.A.getIndex(8), new Piece(8, Column.A, Color.BLACK, pieceType.ROOK));
+		board.put(Column.H.getIndex(8), new Piece(8, Column.H, Color.BLACK, pieceType.ROOK));
+		board.put(Column.B.getIndex(8), new Piece(8, Column.B, Color.BLACK, pieceType.KNIGHT));
+		board.put(Column.G.getIndex(8), new Piece(8, Column.G, Color.BLACK, pieceType.KNIGHT));
+		board.put(Column.C.getIndex(8), new Piece(8, Column.C, Color.BLACK, pieceType.BISHOP));
+		board.put(Column.F.getIndex(8), new Piece(8, Column.F, Color.BLACK, pieceType.BISHOP));
+		board.put(Column.D.getIndex(8), new Piece(8, Column.D, Color.BLACK, pieceType.QUEEN));
+		board.put(Column.E.getIndex(8), new Piece(8, Column.E, Color.BLACK, pieceType.KING));
 		
-		for (int i = 0; i < 8; i++) {
-			board.add((2*i) + 8, new Piece(i, 1, Color.BLACK, pieceType.PAWN, (2*i) + 8));
-			board.add((2*i) + 9, new Piece(i, 6, Color.WHITE, pieceType.PAWN, (2*i) + 9));
+		for (Column col : Column.values()) 
+		{
+			board.put(col.getIndex(7), new Piece(7, col, Color.BLACK, pieceType.PAWN));
+			board.put(col.getIndex(2), new Piece(2, col, Color.WHITE, pieceType.PAWN));
 		}
 		
-		board.add(24, new Piece(0, 7, Color.WHITE, pieceType.ROOK, 24));
-		board.add(25, new Piece(7, 7, Color.WHITE, pieceType.ROOK, 25));
-		board.add(26, new Piece(1, 7, Color.WHITE, pieceType.KNIGHT, 26));
-		board.add(27, new Piece(6, 7, Color.WHITE, pieceType.KNIGHT, 27));
-		board.add(28, new Piece(2, 7, Color.WHITE, pieceType.BISHOP, 28));
-		board.add(29, new Piece(5, 7, Color.WHITE, pieceType.BISHOP, 29));
-		board.add(30, new Piece(3, 7, Color.WHITE, pieceType.QUEEN, 30));
-		board.add(31, new Piece(4, 7, Color.WHITE, pieceType.KING, 31));
+		board.put(Column.A.getIndex(1), new Piece(1, Column.A, Color.WHITE, pieceType.ROOK));
+		board.put(Column.H.getIndex(1), new Piece(1, Column.H, Color.WHITE, pieceType.ROOK));
+		board.put(Column.B.getIndex(1), new Piece(1, Column.B, Color.WHITE, pieceType.KNIGHT));
+		board.put(Column.G.getIndex(1), new Piece(1, Column.G, Color.WHITE, pieceType.KNIGHT));
+		board.put(Column.C.getIndex(1), new Piece(1, Column.C, Color.WHITE, pieceType.BISHOP));
+		board.put(Column.F.getIndex(1), new Piece(1, Column.F, Color.WHITE, pieceType.BISHOP));
+		board.put(Column.D.getIndex(1), new Piece(1, Column.D, Color.WHITE, pieceType.QUEEN));
+		board.put(Column.E.getIndex(1), new Piece(1, Column.E, Color.WHITE, pieceType.KING));
 		
-		int num = 32;
-		for (int j = 2; j < 6; j++) {
-			for (int i = 0; i < 8; i++) {
-				board.add(num, new Piece(i, j, Color.BLUE, pieceType.EMPTY, num));
-				num++;
+		for (Column col : Column.values()) 
+		{
+			for (int i = 1; i < 9; i++) {
+				board.put(col.getIndex(i), new Piece(i, col, Color.BLUE, pieceType.EMPTY));
 			}
 		}
-		
-		this.board = board;
-		drawBoard(board);
+		drawBoard();
 		frame.setVisible(true);
 	}
 	
+//    private void updatePossibleMoves(ArrayList<Piece> brd)
+//    {
+//    	for (Piece p: brd)
+//    	{
+//			if (p.type != pieceType.EMPTY) -- pseudocode
+	
+//    		ArrayList<Point> ans = new ArrayList<>();
+//			for (Piece p2 : board) {
+//				if(p.isLegal(p2, board)){
+//					ans.add(new Point(p2.x, p2.y));
+//				}
+//			}
+//			p.possibleMoves = ans;
+//    	}
+//    }
+       
 	//drawBoard: takes array of currentBoard and adds buttons 
-    public void drawBoard(ArrayList<Piece> board) 
+    private void drawBoard() 
     {
     	frame.repaint();
-    	for (Piece piece : board) 
-    	{
-    		createButton(piece);
-		}
-    	createButton(new Piece(0,0,Color.black,null,65)); //the fuker button
+    	System.out.println(toStringArray(board));
+//    	for (Piece piece: board.values())
+//    	{
+//    		System.out.println("Piece " + board.get(piece.findIndex()).index + ", type: " + board.get(piece.findIndex()).type);
+//    		createButton(piece);
+//		}
+//    	createButton(new Piece(1, Column.A, Color.BLUE, null)); //the fuker button
 	}
-      
-    /*
-     Needed Comment
-   
-    int count = 0;
-	int secCount = 0;
-	for (int a = 0; a < ar.length; a++) {
-		for (int z = 0; z < ar.length; z++) {
-			JButton button = new JButton(Integer.toString(ar[z][a]));
-			button.setBounds(new Rectangle( ((WIDTH/8)*z), ((HEIGHT/8)*a), WIDTH/8, HEIGHT/8) );
-			button.setOpaque(true);
-			button.setBorderPainted(false);
-			button.addActionListener(new EndingListener ());
-			
-			if (secCount % 8 == 0)
-			{
-				count ++;
-			}
-			//new new new shit
-			
-			if (count % 2 == 0)
-			{
-				button.setBackground (new Color (172, 112, 61));
-			}
-			frame.add(button);
-			count ++;
-			secCount++;
-		}
-	}    
-	
-	//if ur reading this, stay woke lil fuker
-	JButton fuker = new JButton ();
-	frame.add(fuker);
-	frame.setVisible(true);
-	*/
     
     //createButton: takes piece and draws it on the board
     private void createButton(Piece p) {
@@ -134,7 +118,7 @@ public class Board {
     		button.setActionCommand(p.toString());
     	}
     	button.setPiece(p);
-		button.setBounds(((this.WIDTH/8)*p.x), ((this.HEIGHT/8)*p.y), this.WIDTH/8, this.HEIGHT/8);
+		button.setBounds(((this.WIDTH/8)*p.col.getX()), ((this.HEIGHT/8)*(8 - p.row)), this.WIDTH/8, this.HEIGHT/8);
 		button.setOpaque(true);
 		button.setBorderPainted(false);
 		button.addActionListener(new EndingListener ());
@@ -176,53 +160,100 @@ public class Board {
 			button.setBorder(new LineBorder (Color.BLACK, 1));
 			button.setBorderPainted(true);
 			frame.add(button);
-		}
-		
-		
+		}	
 	}
-
+    
+    public String toStringArray (HashMap<Integer, Piece> brd)
+	{	
+		StringBuilder sb = new StringBuilder ();
+		for (Piece piece: brd.values())
+	    {
+			sb.append("\n");
+	    	sb.append("Type: " + brd.get(piece.findIndex()).type);
+	    	sb.append("("+brd.get(piece.findIndex()).col + ", " + brd.get(piece.findIndex()).row + ")");
+		}
+		return sb.toString();
+	}
+        
+    /*
+     Needed Comment
+   
+    int count = 0;
+	int secCount = 0;
+	for (int a = 0; a < ar.length; a++) {
+		for (int z = 0; z < ar.length; z++) {
+			JButton button = new JButton(Integer.toString(ar[z][a]));
+			button.setBounds(new Rectangle( ((WIDTH/8)*z), ((HEIGHT/8)*a), WIDTH/8, HEIGHT/8) );
+			button.setOpaque(true);
+			button.setBorderPainted(false);
+			button.addActionListener(new EndingListener ());
+			
+			if (secCount % 8 == 0)
+			{
+				count ++;
+			}
+			//new new new shit
+			
+			if (count % 2 == 0)
+			{
+				button.setBackground (new Color (172, 112, 61));
+			}
+			frame.add(button);
+			count ++;
+			secCount++;
+		}
+	}    
+	
+	//if ur reading this, stay woke lil fuker
+	JButton fuker = new JButton ();
+	frame.add(fuker);
+	frame.setVisible(true);
+	*/
+   
     private class EndingListener implements ActionListener
     { 
 		//goal 1: click first piece, click landing spot. Print "no" is cannot be done. Print "yes" if it can
 		public void actionPerformed(ActionEvent e) 
 		{
-			int indexOf = Integer.parseInt(e.getActionCommand());
-			//System.out.println("Clicked on index: " + e.getActionCommand() + ", isSecond: " + isSecond);
+			System.out.println(board.get(e.getActionCommand()).type);
 			
-			if(isSecond == false){
-				if(board.get(indexOf).type != pieceType.EMPTY)
-				{
-					movingPiece = board.get(indexOf);
-					isSecond = true;
-					System.out.println("Where do you want the " + board.get(indexOf).type + " to go?");
-					return;
-					
-				}else
-				{
-					isSecond = false;
-					System.out.println("was empty.");
-					return;
-				}
-			}
-			else if(isSecond == true)
-			{
-				if(board.get(indexOf).type == pieceType.EMPTY || board.get(indexOf).color != movingPiece.color)
-				{
-					destinationPiece = board.get(indexOf);
-					isSecond = false;
-					System.out.println("moving to " + board.get(indexOf).type + "...");
-					boolean isItLegal = movingPiece.isLegal(destinationPiece, board);
-					System.out.println("result: " + isItLegal + "\n");
-					return;
-				}
-				else
-				{
+//			int indexOf = Integer.parseInt(e.getActionCommand());
+//			//System.out.println("Clicked on index: " + e.getActionCommand() + ", isSecond: " + isSecond);
+//			
+//			if(isSecond == false){
+//				if(board.get(indexOf).type != pieceType.EMPTY)
+//				{
+//					movingPiece = board.get(indexOf);
+//					isSecond = true;
+//					System.out.println("Where do you want the " + board.get(indexOf).type + " to go?");
+//					return;
+//					
+//				}else
+//				{
 //					isSecond = false;
-					System.out.println("can't move to your own piece.");
-					return;
-				}
-				 
-			}
+//					System.out.println("was empty.");
+//					return;
+//				}
+//			}
+//			else if(isSecond == true)
+//			{
+//				if(board.get(indexOf).type == pieceType.EMPTY || board.get(indexOf).color != movingPiece.color)
+//				{
+//					destinationPiece = board.get(indexOf);
+//					isSecond = false;
+//					System.out.println("moving to " + board.get(indexOf).type + "...");
+//					boolean isItLegal = movingPiece.isLegal(destinationPiece, board);
+//					System.out.println("result: " + isItLegal + "\n");
+//					return;
+//				}
+//				else
+//				{
+////					isSecond = false;
+//					System.out.println("can't move to your own piece.");
+//					return;
+//				}
+//				 
+//			}
 		}
     }
 	
