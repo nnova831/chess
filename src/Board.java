@@ -72,26 +72,31 @@ public class Board {
 				board.put(col.getIndex(i), new Piece(i, col, Color.BLUE, pieceType.EMPTY));
 			}
 		}
-		System.out.println(toStringArray(board));
 		drawBoard();
 		frame.setVisible(true);
+		updatePossibleMoves(board);
+		System.out.println(board.get(0).toStringPossibleMoves());
 	}
 	
-//    private void updatePossibleMoves(ArrayList<Piece> brd)
-//    {
-//    	for (Piece p: brd)
-//    	{
-//			if (p.type != pieceType.EMPTY) -- pseudocode
-	
-//    		ArrayList<Point> ans = new ArrayList<>();
-//			for (Piece p2 : board) {
-//				if(p.isLegal(p2, board)){
-//					ans.add(new Point(p2.x, p2.y));
-//				}
-//			}
-//			p.possibleMoves = ans;
-//    	}
-//    }
+    private void updatePossibleMoves(HashMap <Integer, Piece> brd) 
+    {
+    	for (Integer p: brd.keySet())
+    	{
+    	
+			if (brd.get(p).type == pieceType.EMPTY)
+			{
+				return;
+			}
+    		ArrayList <Location> ans = new ArrayList<>();
+			
+			for (Integer p2: brd.keySet()) {
+				if(brd.get(p).isLegal(brd.get(p2), board)){
+					ans.add(new Location (brd.get(p2).col, brd.get(p2).row));
+				}
+			}
+			brd.get(p).possibleMoves = ans;
+    	}
+    }
        
 	//drawBoard: takes array of currentBoard and adds buttons 
     private void drawBoard() 
@@ -117,7 +122,7 @@ public class Board {
     	{
     		//System.out.println(p.type.toString().substring(0,2));
     		button = new ButtonExtend(p.type.toString().substring(0,2));
-    		button.setActionCommand(p.toString());
+    		button.setActionCommand(p.toStringIndex());
     	}
     	button.setPiece(p);
 		button.setBounds(((this.WIDTH/8)*p.col.getX()), ((this.HEIGHT/8)*(8 - p.row)), this.WIDTH/8, this.HEIGHT/8);
@@ -217,7 +222,7 @@ public class Board {
 		//goal 1: click first piece, click landing spot. Print "no" is cannot be done. Print "yes" if it can
 		public void actionPerformed(ActionEvent e) 
 		{
-			System.out.println(board.get(e.getActionCommand()).type);
+			//System.out.println(board.get(e.getActionCommand()).type);
 			
 //			int indexOf = Integer.parseInt(e.getActionCommand());
 //			//System.out.println("Clicked on index: " + e.getActionCommand() + ", isSecond: " + isSecond);

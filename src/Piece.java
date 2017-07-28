@@ -9,7 +9,7 @@ public class Piece {
 	Column col; 
 	Color color;
 	pieceType type;
-	ArrayList<Point> possibleMoves = new ArrayList<>();
+	ArrayList <Location> possibleMoves = new ArrayList<>();
 	int index;
 	
 	public Piece(int row, Column col, Color color, pieceType type)
@@ -26,7 +26,7 @@ public class Piece {
 	}
 
 	//isLegal: takes a piece of destination and determines if this piece is allowed to make that move
-  	public boolean isLegal(Piece that, ArrayList<Piece> b) {
+  	public boolean isLegal(Piece that, HashMap<Integer, Piece> b) {
   		if(this.possibleMoves.contains(new Point(that.col.getX(), (8 - that.row))))
   		{
   			return true;
@@ -36,11 +36,11 @@ public class Piece {
   			switch (this.type) 
   			{
   			case KNIGHT:
-  				//return this.KnightLegal(that);
+  				return this.KnightLegal(that);
   			case KING: 
-  				//return this.KingLegal(that);
+  				return this.KingLegal(that);
   			case ROOK:
-  				//return this.RookLegal(that, b);
+  				return this.RookLegal(that, b);
   			default:
   				return false;
   			}
@@ -48,7 +48,7 @@ public class Piece {
   	}
 	
   	//returns true if this piece can move to that piece as assuming this is a bishop
-	private boolean BishopLegal(Piece that, ArrayList<Piece> brd)
+	private boolean BishopLegal(Piece that, HashMap<Integer, Piece> brd)
 	{
 		int upR, upL, dwnR, dwnL;
 		Piece p = this;
@@ -56,105 +56,114 @@ public class Piece {
 	}
 	
 	//returns true if this piece can move to that piece as assuming this is a knight
-//	private boolean KnightLegal(Piece that)
-//	{
-//		if(Math.abs(that.x - this.x) == 1 && Math.abs(that.y - this.y) == 2)
-//		{
-//			if(this.color == that.color)
-//			{
-//				return false;
-//			}else
-//			{
-//				return true;
-//			}
-//		}
-//		else if(Math.abs(that.x - this.x) == 2 && Math.abs(that.y - this.y) == 1)
-//		{
-//			if(this.color == that.color)
-//			{
-//				return false;
-//			}else
-//			{
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-//
-//	//returns true if this piece can move to that piece as assuming this is a king
-//	private boolean KingLegal(Piece that)
-//	{
-//		if(Math.abs(that.x - this.x) <= 1 && Math.abs(that.y - this.y) <= 1)
-//		{
-//			if(this.color != that.color)
-//			{
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-//	
-//	//returns true if this piece can move to that piece as assuming this is a rook
-//	private boolean RookLegal(Piece that, ArrayList<Piece> brd)
-//	{
-//		int a, b;
-//		
-//		if((that.x - this.x) == 0)
-//		{
-//			if((that.y - this.y) < 0) //straight up
-//			{
-//				a = 0;
-//				b = -1;
-//			}else if (that.y - this.y > 0) //straight down
-//			{
-//				a = 0;
-//				b = 1;
-//			}
-//			else
-//			{
-//				return this.color != that.color;
-//			}
-//		}	
-//		else if((that.y - this.y) == 0)
-//		{
-//			if((that.x - this.x) < 0) //left
-//			{
-//				a = -1;
-//				b = 0;
-//			}else //right
-//			{
-//				a = 1;
-//				b = 0;
-//			}
-//		}
-//		else
-//		{
-//			return false;
-//		}
-//		
-//		for (int i = 0; i < brd.size(); i++)
-//		{
-//			if (brd.get(i).equalsCoord(this.x + a, this.y + b))
-//			{
-//				if(brd.get(i).type != pieceType.EMPTY && !brd.get(i).equals(that)){
-//					return false;
-//				}
-//				this.x = brd.get(i).x;
-//				this.y = brd.get(i).y;
-//			}
-//		}
-//		return this.RookLegal(that, brd);
-//	}
+	private boolean KnightLegal(Piece that)
+	{
+		if(Math.abs(that.col.getX() - this.col.getX()) == 1 && Math.abs(that.row - this.row) == 2)
+		{
+			if(this.color == that.color)
+			{
+				return false;
+			}else
+			{
+				return true;
+			}
+		}
+		else if(Math.abs(that.col.getX() - this.col.getX()) == 2 && Math.abs(that.row - this.row) == 1)
+		{
+			if(this.color == that.color)
+			{
+				return false;
+			}else
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	//returns true if this piece can move to that piece as assuming this is a king
+	private boolean KingLegal(Piece that)
+	{
+		if(Math.abs(that.col.getX() - this.col.getX()) <= 1 && Math.abs(that.row - this.row) <= 1)
+		{
+			if(this.color != that.color)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	//returns true if this piece can move to that piece as assuming this is a rook
+	private boolean RookLegal(Piece that, HashMap <Integer, Piece> brd)
+	{
+		int a, b;
+		
+		if((that.col.getX() - this.col.getX()) == 0)
+		{
+			if((that.row - this.row) < 0) //straight up
+			{
+				a = 0;
+				b = -1;
+			}else if (that.row - this.row > 0) //straight down
+			{
+				a = 0;
+				b = 1;
+			}
+			else
+			{
+				return this.color != that.color;
+			}
+		}	
+		else if((that.row - this.row) == 0)
+		{
+			if((that.col.getX() - this.col.getX()) < 0) //left
+			{
+				a = -1;
+				b = 0;
+			}else //right
+			{
+				a = 1;
+				b = 0;
+			}
+		}
+		else
+		{
+			return false;
+		}
+		
+		for (int i = 0; i < brd.size(); i++)
+		{
+			if (brd.get(i).equalsCoord(this.col.getX() + a, this.row + b))
+			{
+				if(brd.get(i).type != pieceType.EMPTY && !brd.get(i).equals(that)){
+					return false;
+				}
+				this.col = brd.get(i).col;
+				this.row = brd.get(i).row;
+			}
+		}
+		return this.RookLegal(that, brd);
+	}
 
 	// OVERRIDE: prints out the index in array (which is converted to an 
 	// int later to find the corresponding Piece) instead of memory address
-	public String toString()
+	public String toStringIndex()
 	{
 		StringBuilder sb = new StringBuilder ();
 		sb.append(this.index);
 		return sb.toString();
 	}
 
+	public String toStringPossibleMoves ()
+	{
+		StringBuilder sb = new StringBuilder (this.type.toString() + " (" + this.col + "" + this.row + ")   Poss Moves: ");
+		for (int i = 0; i < possibleMoves.size(); i++)
+		{
+			sb.append(this.possibleMoves.get(i));
+		}
+		return sb.toString();
+	}
 	
 	//returns true if this and comparable have equal x and y's
 	public boolean equalsCoord(Piece comparable)
