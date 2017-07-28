@@ -5,29 +5,27 @@ import java.util.HashMap;
 
 public class Piece {
 	
-	int row; //row on the board (FORMAL so 8 - 1)
-	Column col; 
+	Location Location; 
 	Color color;
 	pieceType type;
 	ArrayList <Location> possibleMoves = new ArrayList<>();
 	int index;
 	
-	public Piece(int row, Column col, Color color, pieceType type)
+	public Piece(Location loc, Color color, pieceType type)
 	{
 		this.color  = color;
 		this.type = type;
-		this.row = row;
-		this.col = col;
+		this.Location = loc;
 		this.index = findIndex();
 	}
 	
 	public int findIndex() {
-		return this.col.getIndex(row);
+		return this.Location.getCol().getIndex(Location.getRow());
 	}
 
 	//isLegal: takes a piece of destination and determines if this piece is allowed to make that move
   	public boolean isLegal(Piece that, HashMap<Integer, Piece> b) {
-  		if(this.possibleMoves.contains(new Point(that.col.getX(), (8 - that.row))))
+  		if(this.possibleMoves.contains(new Point(that.Location.getCol().getX(), (8 - that.Location.getRow()))))
   		{
   			return true;
   		}
@@ -58,7 +56,7 @@ public class Piece {
 	//returns true if this piece can move to that piece as assuming this is a knight
 	private boolean KnightLegal(Piece that)
 	{
-		if(Math.abs(that.col.getX() - this.col.getX()) == 1 && Math.abs(that.row - this.row) == 2)
+		if(Math.abs(that.Location.getCol().getX() - this.Location.getCol().getX()) == 1 && Math.abs(that.Location.getRow() - this.Location.getRow()) == 2)
 		{
 			if(this.color == that.color)
 			{
@@ -68,7 +66,7 @@ public class Piece {
 				return true;
 			}
 		}
-		else if(Math.abs(that.col.getX() - this.col.getX()) == 2 && Math.abs(that.row - this.row) == 1)
+		else if(Math.abs(that.Location.getCol().getX() - this.Location.getCol().getX()) == 2 && Math.abs(that.Location.getRow() - this.Location.getRow()) == 1)
 		{
 			if(this.color == that.color)
 			{
@@ -84,7 +82,7 @@ public class Piece {
 	//returns true if this piece can move to that piece as assuming this is a king
 	private boolean KingLegal(Piece that)
 	{
-		if(Math.abs(that.col.getX() - this.col.getX()) <= 1 && Math.abs(that.row - this.row) <= 1)
+		if(Math.abs(that.Location.getCol().getX() - this.Location.getCol().getX()) <= 1 && Math.abs(that.Location.getRow() - this.Location.getRow()) <= 1)
 		{
 			if(this.color != that.color)
 			{
@@ -99,13 +97,13 @@ public class Piece {
 	{
 		int a, b;
 		
-		if((that.col.getX() - this.col.getX()) == 0)
+		if((that.Location.getCol().getX() - this.Location.getCol().getX()) == 0)
 		{
-			if((that.row - this.row) < 0) //straight up
+			if((that.Location.getRow() - this.Location.getRow()) < 0) //straight up
 			{
 				a = 0;
 				b = -1;
-			}else if (that.row - this.row > 0) //straight down
+			}else if (that.Location.getRow() - this.Location.getRow() > 0) //straight down
 			{
 				a = 0;
 				b = 1;
@@ -115,9 +113,9 @@ public class Piece {
 				return this.color != that.color;
 			}
 		}	
-		else if((that.row - this.row) == 0)
+		else if((that.Location.getRow() - this.Location.getRow()) == 0)
 		{
-			if((that.col.getX() - this.col.getX()) < 0) //left
+			if((that.Location.getCol().getX() - this.Location.getCol().getX()) < 0) //left
 			{
 				a = -1;
 				b = 0;
@@ -134,13 +132,13 @@ public class Piece {
 		
 		for (int i = 0; i < brd.size(); i++)
 		{
-			if (brd.get(i).equalsCoord(this.col.getX() + a, this.row + b))
+			if (brd.get(i).equalsCoord(this.Location.getCol().getX() + a, this.Location.getRow() + b))
 			{
 				if(brd.get(i).type != pieceType.EMPTY && !brd.get(i).equals(that)){
 					return false;
 				}
-				this.col = brd.get(i).col;
-				this.row = brd.get(i).row;
+				this.Location.setCol(brd.get(i).Location.getCol());
+				this.Location.setRow(brd.get(i).Location.getRow());
 			}
 		}
 		return this.RookLegal(that, brd);
@@ -157,7 +155,7 @@ public class Piece {
 
 	public String toStringPossibleMoves ()
 	{
-		StringBuilder sb = new StringBuilder (this.type.toString() + " (" + this.col + "" + this.row + ")   Poss Moves: ");
+		StringBuilder sb = new StringBuilder (this.type.toString() + " (" + this.Location.getCol() + "" + this.Location.getRow() + ")   Poss Moves: ");
 		for (int i = 0; i < possibleMoves.size(); i++)
 		{
 			sb.append(this.possibleMoves.get(i));
@@ -168,12 +166,12 @@ public class Piece {
 	//returns true if this and comparable have equal x and y's
 	public boolean equalsCoord(Piece comparable)
 	{
-		return (this.col.getX() == comparable.col.getX() && this.row == comparable.row);
+		return (this.Location.getCol().getX() == comparable.Location.getCol().getX() && this.Location.getRow() == comparable.Location.getRow());
 	}
 	
 	//returns true if this has the same x as i and the same y as j
 	public boolean equalsCoord(int i, int j) {
-		return this.col.getX() == i && this.row == j;
+		return this.Location.getCol().getX() == i && this.Location.getRow() == j;
 	}
 	
 	//OVERRIDES the equals method so we can compare temporary objects to the original object in the array
@@ -182,8 +180,8 @@ public class Piece {
 		return (this.color == comparable.color &&
 				this.index == comparable.index &&
 				this.type == comparable.type &&
-				this.col.getX() == comparable.col.getX() &&
-				this.row == comparable.row);
+				this.Location.getCol().getX() == comparable.Location.getCol().getX() &&
+				this.Location.getRow() == comparable.Location.getRow());
 	}
 	
 }

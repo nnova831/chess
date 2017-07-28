@@ -40,36 +40,36 @@ public class Board {
 	private void setDefaultBoard(){
 		board = new HashMap<>();
 		//(int row, Column col, Color color, pieceType type)
-		board.put(Column.A.getIndex(8), new Piece(8, Column.A, Color.BLACK, pieceType.ROOK));
-		board.put(Column.H.getIndex(8), new Piece(8, Column.H, Color.BLACK, pieceType.ROOK));
-		board.put(Column.B.getIndex(8), new Piece(8, Column.B, Color.BLACK, pieceType.KNIGHT));
-		board.put(Column.G.getIndex(8), new Piece(8, Column.G, Color.BLACK, pieceType.KNIGHT));
-		board.put(Column.C.getIndex(8), new Piece(8, Column.C, Color.BLACK, pieceType.BISHOP));
-		board.put(Column.F.getIndex(8), new Piece(8, Column.F, Color.BLACK, pieceType.BISHOP));
-		board.put(Column.D.getIndex(8), new Piece(8, Column.D, Color.BLACK, pieceType.QUEEN));
-		board.put(Column.E.getIndex(8), new Piece(8, Column.E, Color.BLACK, pieceType.KING));
+		board.put(Column.A.getIndex(8), new Piece(new Location(Column.A, 8), Color.BLACK, pieceType.ROOK));
+		board.put(Column.H.getIndex(8), new Piece(new Location(Column.H, 8), Color.BLACK, pieceType.ROOK));
+		board.put(Column.B.getIndex(8), new Piece(new Location(Column.B, 8), Color.BLACK, pieceType.KNIGHT));
+		board.put(Column.G.getIndex(8), new Piece(new Location(Column.G, 8), Color.BLACK, pieceType.KNIGHT));
+		board.put(Column.C.getIndex(8), new Piece(new Location(Column.C, 8), Color.BLACK, pieceType.BISHOP));
+		board.put(Column.F.getIndex(8), new Piece(new Location(Column.F, 8), Color.BLACK, pieceType.BISHOP));
+		board.put(Column.D.getIndex(8), new Piece(new Location(Column.D, 8), Color.BLACK, pieceType.QUEEN));
+		board.put(Column.E.getIndex(8), new Piece(new Location(Column.E, 8), Color.BLACK, pieceType.KING));
 		
 		
 		for (Column col : Column.values()) 
 		{
-			board.put(col.getIndex(7), new Piece(7, col, Color.BLACK, pieceType.PAWN));
-			board.put(col.getIndex(2), new Piece(2, col, Color.WHITE, pieceType.PAWN));
+			board.put(col.getIndex(7), new Piece(new Location(col, 7), Color.BLACK, pieceType.PAWN));
+			board.put(col.getIndex(2), new Piece(new Location(col, 2), Color.WHITE, pieceType.PAWN));
 		}
 		
-		board.put(Column.A.getIndex(1), new Piece(1, Column.A, Color.WHITE, pieceType.ROOK));
-		board.put(Column.H.getIndex(1), new Piece(1, Column.H, Color.WHITE, pieceType.ROOK));
-		board.put(Column.B.getIndex(1), new Piece(1, Column.B, Color.WHITE, pieceType.KNIGHT));
-		board.put(Column.G.getIndex(1), new Piece(1, Column.G, Color.WHITE, pieceType.KNIGHT));
-		board.put(Column.C.getIndex(1), new Piece(1, Column.C, Color.WHITE, pieceType.BISHOP));
-		board.put(Column.F.getIndex(1), new Piece(1, Column.F, Color.WHITE, pieceType.BISHOP));
-		board.put(Column.D.getIndex(1), new Piece(1, Column.D, Color.WHITE, pieceType.QUEEN));
-		board.put(Column.E.getIndex(1), new Piece(1, Column.E, Color.WHITE, pieceType.KING));
+		board.put(Column.A.getIndex(1), new Piece(new Location(Column.A, 1), Color.WHITE, pieceType.ROOK));
+		board.put(Column.H.getIndex(1), new Piece(new Location(Column.H, 1), Color.WHITE, pieceType.ROOK));
+		board.put(Column.B.getIndex(1), new Piece(new Location(Column.B, 1), Color.WHITE, pieceType.KNIGHT));
+		board.put(Column.G.getIndex(1), new Piece(new Location(Column.G, 1), Color.WHITE, pieceType.KNIGHT));
+		board.put(Column.C.getIndex(1), new Piece(new Location(Column.C, 1), Color.WHITE, pieceType.BISHOP));
+		board.put(Column.F.getIndex(1), new Piece(new Location(Column.F, 1), Color.WHITE, pieceType.BISHOP));
+		board.put(Column.D.getIndex(1), new Piece(new Location(Column.D, 1), Color.WHITE, pieceType.QUEEN));
+		board.put(Column.E.getIndex(1), new Piece(new Location(Column.E, 1), Color.WHITE, pieceType.KING));
 		
 		for (Column col : Column.values()) 
 		{
 			for (int i = 3; i < 7; i++) 
 			{
-				board.put(col.getIndex(i), new Piece(i, col, Color.BLUE, pieceType.EMPTY));
+				board.put(col.getIndex(i), new Piece(new Location(col, i), Color.BLUE, pieceType.EMPTY));
 			}
 		}
 		drawBoard();
@@ -91,7 +91,7 @@ public class Board {
 			
 			for (Integer p2: brd.keySet()) {
 				if(brd.get(p).isLegal(brd.get(p2), board)){
-					ans.add(new Location (brd.get(p2).col, brd.get(p2).row));
+					ans.add(new Location (brd.get(p2).Location.getCol(), brd.get(p2).Location.getRow()));
 				}
 			}
 			brd.get(p).possibleMoves = ans;
@@ -106,7 +106,7 @@ public class Board {
     	{
     		createButton(piece);
 		}
-    	createButton(new Piece(1, Column.A, Color.BLUE, null)); //the fuker button
+    	createButton(new Piece(new Location(Column.A,1), Color.CYAN, null)); //the fuker button
 	}
     
     //createButton: takes piece and draws it on the board
@@ -125,7 +125,7 @@ public class Board {
     		button.setActionCommand(p.toStringIndex());
     	}
     	button.setPiece(p);
-		button.setBounds(((this.WIDTH/8)*p.col.getX()), ((this.HEIGHT/8)*(8 - p.row)), this.WIDTH/8, this.HEIGHT/8);
+		button.setBounds(((this.WIDTH/8)*p.Location.getCol().getX()), ((this.HEIGHT/8)*(8 - p.Location.getRow())), this.WIDTH/8, this.HEIGHT/8);
 		button.setOpaque(true);
 		button.setBorderPainted(false);
 		button.addActionListener(new EndingListener ());
@@ -177,7 +177,7 @@ public class Board {
 	    {
 			sb.append("\n");
 	    	sb.append("Type: " + brd.get(piece.findIndex()).type);
-	    	sb.append("("+brd.get(piece.findIndex()).col + ", " + brd.get(piece.findIndex()).row + ")");
+	    	sb.append("("+brd.get(piece.findIndex()).Location.getCol() + ", " + brd.get(piece.findIndex()).Location.getRow() + ")");
 		}
 		return sb.toString();
 	}
@@ -222,7 +222,7 @@ public class Board {
 		//goal 1: click first piece, click landing spot. Print "no" is cannot be done. Print "yes" if it can
 		public void actionPerformed(ActionEvent e) 
 		{
-			//System.out.println(board.get(e.getActionCommand()).type);
+			//System.out.println(board.get(e.getActionCommand()).toStringPossibleMoves());
 			
 //			int indexOf = Integer.parseInt(e.getActionCommand());
 //			//System.out.println("Clicked on index: " + e.getActionCommand() + ", isSecond: " + isSecond);
