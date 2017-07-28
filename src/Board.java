@@ -49,6 +49,7 @@ public class Board {
 		board.put(Column.D.getIndex(8), new Piece(8, Column.D, Color.BLACK, pieceType.QUEEN));
 		board.put(Column.E.getIndex(8), new Piece(8, Column.E, Color.BLACK, pieceType.KING));
 		
+		
 		for (Column col : Column.values()) 
 		{
 			board.put(col.getIndex(7), new Piece(7, col, Color.BLACK, pieceType.PAWN));
@@ -66,10 +67,12 @@ public class Board {
 		
 		for (Column col : Column.values()) 
 		{
-			for (int i = 1; i < 9; i++) {
+			for (int i = 3; i < 7; i++) 
+			{
 				board.put(col.getIndex(i), new Piece(i, col, Color.BLUE, pieceType.EMPTY));
 			}
 		}
+		System.out.println(toStringArray(board));
 		drawBoard();
 		frame.setVisible(true);
 	}
@@ -94,13 +97,11 @@ public class Board {
     private void drawBoard() 
     {
     	frame.repaint();
-    	System.out.println(toStringArray(board));
-//    	for (Piece piece: board.values())
-//    	{
-//    		System.out.println("Piece " + board.get(piece.findIndex()).index + ", type: " + board.get(piece.findIndex()).type);
-//    		createButton(piece);
-//		}
-//    	createButton(new Piece(1, Column.A, Color.BLUE, null)); //the fuker button
+    	for (Piece piece: board.values())
+    	{
+    		createButton(piece);
+		}
+    	createButton(new Piece(1, Column.A, Color.BLUE, null)); //the fuker button
 	}
     
     //createButton: takes piece and draws it on the board
@@ -114,6 +115,7 @@ public class Board {
     	}
     	else
     	{
+    		//System.out.println(p.type.toString().substring(0,2));
     		button = new ButtonExtend(p.type.toString().substring(0,2));
     		button.setActionCommand(p.toString());
     	}
