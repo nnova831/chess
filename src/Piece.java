@@ -208,16 +208,13 @@ public class Piece {
 
 	public HashMap<Integer,Piece> switchPieces(Piece destinationPiece, HashMap<Integer,Piece> brd) 
 	{
-		Piece movingPiece = this;
-		Piece movTemp = this;
+		Location movTemp = new Location (this.col, this.row);
 		
-		movingPiece.col = destinationPiece.col;
-		movingPiece.row = destinationPiece.row;
+		this.col = destinationPiece.col;
+		this.row = destinationPiece.row;
 		
 		destinationPiece.col = movTemp.col;
 		destinationPiece.row = movTemp.row;
-		
-		
 		
 		if (destinationPiece.color != Color.BLUE)
 		{
