@@ -14,8 +14,8 @@ import javax.swing.text.html.HTMLDocument.Iterator;
 public class Board {
 	
 	private static HashMap<Integer, Piece> board;
-	private int WIDTH = 800;
-	private int HEIGHT = 800;
+	private int WIDTH = 850;
+	private int HEIGHT = 850;
 	private int OFFSETHEIGHT = 25;
 	private JFrame frame;
 	private Piece movingPiece;
@@ -25,7 +25,6 @@ public class Board {
 	public static void main(String[] args) {		
 		Board b = new Board();
 		b.setDefaultBoard();
-		//b.updatePossibleMoves(board);
 	}
 	
 	public Board() {
@@ -72,29 +71,23 @@ public class Board {
 				board.put(col.getIndex(i), new Piece(i, col, Color.BLUE, pieceType.EMPTY));
 			}
 		}
+		
 		drawBoard();
 		frame.setVisible(true);
 		updatePossibleMoves(board);
-		System.out.println(board.get(0).toStringPossibleMoves());
 	}
 	
-    private void updatePossibleMoves(HashMap <Integer, Piece> brd) 
+    private void updatePossibleMoves (HashMap <Integer, Piece> brd) 
     {
-    	for (Integer p: brd.keySet())
+    	for (int i = 0; i <64; i++) // for (int i = 0; i < 64; i++) does the same thing
     	{
-    	
-			if (brd.get(p).type == pieceType.EMPTY)
+			if (brd.get(i).type != pieceType.EMPTY)
 			{
-				return;
+				brd.get(i).possibleMoves = brd.get(i).setPossibleMovesArray (brd);
 			}
-    		ArrayList <Location> ans = new ArrayList<>();
+//			System.out.println(brd.get(i).col +","+ brd.get(i).row+" " +brd.get(i).type
+//					+ " "+brd.get(i).possibleMoves);
 			
-			for (Integer p2: brd.keySet()) {
-				if(brd.get(p).isLegal(brd.get(p2), board)){
-					ans.add(new Location (brd.get(p2).col, brd.get(p2).row));
-				}
-			}
-			brd.get(p).possibleMoves = ans;
     	}
     }
        
@@ -176,8 +169,8 @@ public class Board {
 		for (Piece piece: brd.values())
 	    {
 			sb.append("\n");
-	    	sb.append("Type: " + brd.get(piece.findIndex()).type);
-	    	sb.append("("+brd.get(piece.findIndex()).col + ", " + brd.get(piece.findIndex()).row + ")");
+	    	sb.append("Type: " + brd.get(piece.colToIndex()).type);
+	    	sb.append("("+brd.get(piece.colToIndex()).col + ", " + brd.get(piece.colToIndex()).row + ")");
 		}
 		return sb.toString();
 	}
@@ -222,45 +215,54 @@ public class Board {
 		//goal 1: click first piece, click landing spot. Print "no" is cannot be done. Print "yes" if it can
 		public void actionPerformed(ActionEvent e) 
 		{
-			//System.out.println(board.get(e.getActionCommand()).type);
+//			System.out.println(e.getActionCommand());
 			
-//			int indexOf = Integer.parseInt(e.getActionCommand());
-//			//System.out.println("Clicked on index: " + e.getActionCommand() + ", isSecond: " + isSecond);
-//			
-//			if(isSecond == false){
-//				if(board.get(indexOf).type != pieceType.EMPTY)
-//				{
-//					movingPiece = board.get(indexOf);
-//					isSecond = true;
-//					System.out.println("Where do you want the " + board.get(indexOf).type + " to go?");
-//					return;
-//					
-//				}else
-//				{
-//					isSecond = false;
-//					System.out.println("was empty.");
-//					return;
-//				}
-//			}
-//			else if(isSecond == true)
-//			{
-//				if(board.get(indexOf).type == pieceType.EMPTY || board.get(indexOf).color != movingPiece.color)
-//				{
-//					destinationPiece = board.get(indexOf);
-//					isSecond = false;
-//					System.out.println("moving to " + board.get(indexOf).type + "...");
-//					boolean isItLegal = movingPiece.isLegal(destinationPiece, board);
-//					System.out.println("result: " + isItLegal + "\n");
-//					return;
-//				}
-//				else
-//				{
-////					isSecond = false;
-//					System.out.println("can't move to your own piece.");
-//					return;
-//				}
-//				 
-//			}
+			int indexOf = Integer.parseInt(e.getActionCommand());
+//			System.out.println("Clicked on index: " + e.getActionCommand() + ", isSecond: " + isSecond);
+//			System.out.println(board.get(indexOf).toStringPossibleMoves());
+			
+			if(isSecond == false){
+				if(board.get(indexOf).type != pieceType.EMPTY)
+				{
+					System.out.println(board.get(indexOf).type + " (" + 
+							board.get(indexOf).col +", "+board.get(indexOf).row+")   PossMoves:" + board.get(indexOf).possibleMoves);
+					movingPiece = board.get(indexOf);
+					isSecond = true;
+					return;
+				}
+				else
+				{
+					isSecond = false;
+					System.out.println("was empty.");
+					return;
+				}
+			}
+			else if(isSecond == true)
+			{
+				if(board.get(indexOf).type == pieceType.EMPTY || board.get(indexOf).color != movingPiece.color)
+				{
+					destinationPiece = board.get(indexOf);
+					isSecond = false;
+					System.out.println("moving to " + destinationPiece.type + "(" + 
+							destinationPiece.col + "" + destinationPiece.row+")");
+					boolean isItLegal = movingPiece.isLegal(destinationPiece, board);
+					System.out.println("result: " + isItLegal + "\n");
+					if (isItLegal)
+					{
+//						System.out.println(movingPiece.type + ", " + destinationPiece.type);
+						board = movingPiece.switchPieces(destinationPiece, board);
+						System.out.println(toStringArray(board));
+						drawBoard();
+					}
+					return;
+				}
+				else
+				{
+					isSecond = false;
+					System.out.println("can't move to your own piece.");
+					return;
+				}
+			}
 		}
     }
 	
