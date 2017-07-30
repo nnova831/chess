@@ -51,8 +51,8 @@ public class Board {
 		
 		for (Column col : Column.values()) 
 		{
-			board.put(col.getIndex(7), new Piece(7, col, Color.BLACK, pieceType.PAWN));
-			board.put(col.getIndex(2), new Piece(2, col, Color.WHITE, pieceType.PAWN));
+			board.put(col.getIndex(7), new Piece(7, col, Color.BLUE, pieceType.EMPTY));
+			board.put(col.getIndex(2), new Piece(2, col, Color.BLUE, pieceType.EMPTY));
 		}
 		
 		board.put(Column.A.getIndex(1), new Piece(1, Column.A, Color.WHITE, pieceType.ROOK));
@@ -249,12 +249,10 @@ public class Board {
 					System.out.println("result: " + isItLegal + "\n");
 					if (isItLegal)
 					{
-//						System.out.println(movingPiece.type + ", " + destinationPiece.type);
 						board = movingPiece.switchPieces(destinationPiece, board);
 						System.out.println(toStringArray(board));
 						drawBoard();
 					}
-					return;
 				}
 				else
 				{

@@ -21,48 +21,70 @@ public class Piece {
 		this.index = colToIndex();
 	}
 	
-	public ArrayList<Location> setPossibleMovesArray (HashMap<Integer, Piece> brd) // Given a piece, return all possible moves
-	{
-		Piece p = this;
-		switch (p.type) {
-			case KNIGHT:
-				return setKnightArray(p, brd);
-			default:
-				break;
-			}    
-		return null;
-	} 
-
 	//isLegal: takes a piece of destination and determines if this piece is allowed to make that move
   	public boolean isLegal(Piece that, HashMap<Integer, Piece> b) {
+  		System.out.println("New Method");
   		for (int i = 0; i < this.possibleMoves.size(); i++)
   		{
   			if (this.possibleMoves.get(i).col == that.col && this.possibleMoves.get(i).row == that.row)
   			{
-	  			System.out.println("New Method");
 	  			return true;
   			}
   		}
   		return false;
   	}
-  	private ArrayList <Location> setKnightArray (Piece potential, HashMap <Integer, Piece> brd)
+  	
+  	
+  	public ArrayList<Location> setPossibleMovesArray (HashMap<Integer, Piece> brd) // Given a piece, return all possible moves
+	{
+		Piece p = this;
+		switch (p.type) {
+			case KNIGHT:
+				return setKnightArray(p, brd);
+			case KING:
+				return setKingArray (p, brd);
+			default:
+				break;
+			}    
+		return null;
+	}
+
+  	private ArrayList <Location> setKingArray (Piece moving, HashMap<Integer, Piece> brd)
+  	{
+  		ArrayList<Location> arr = new ArrayList<>();
+  		for (int i = 0; i < 64; i++)
+  		{
+  			Piece dest = brd.get(i);
+	  		if(Math.abs(moving.col.getX() - dest.col.getX()) <= 1 && 
+	  			Math.abs(moving.row - dest.row) <= 1)
+			{
+				if(dest.color != moving.color)
+				{
+					arr.add(new Location(dest.col, dest.row));
+				}
+			}
+  		}
+  		return arr;
+  	}
+  	
+	private ArrayList <Location> setKnightArray (Piece movingPiece, HashMap <Integer, Piece> brd)
 	{
   		ArrayList <Location> arr = new ArrayList<>();
 		for (int i = 0; i < 64; i++)
 		{
-			Piece piece = brd.get(i);
-			if (piece.equalsCoord(potential.col.getX() + 1, potential.row + 2)
-				|| piece.equalsCoord(potential.col.getX() + 2, potential.row + 1)
-				|| piece.equalsCoord(potential.col.getX() + 1, potential.row - 2)
-				|| piece.equalsCoord(potential.col.getX() + 2, potential.row - 1)
-				|| piece.equalsCoord(potential.col.getX() - 1, potential.row + 2)
-				|| piece.equalsCoord(potential.col.getX() - 2, potential.row + 1)
-				|| piece.equalsCoord(potential.col.getX() - 1, potential.row - 2)
-				|| piece.equalsCoord(potential.col.getX() - 2, potential.row - 1))
+			Piece dest = brd.get(i);
+			if (dest.equalsCoord(movingPiece.col.getX() + 1, movingPiece.row + 2)
+				|| dest.equalsCoord(movingPiece.col.getX() + 2, movingPiece.row + 1)
+				|| dest.equalsCoord(movingPiece.col.getX() + 1, movingPiece.row - 2)
+				|| dest.equalsCoord(movingPiece.col.getX() + 2, movingPiece.row - 1)
+				|| dest.equalsCoord(movingPiece.col.getX() - 1, movingPiece.row + 2)
+				|| dest.equalsCoord(movingPiece.col.getX() - 2, movingPiece.row + 1)
+				|| dest.equalsCoord(movingPiece.col.getX() - 1, movingPiece.row - 2)
+				|| dest.equalsCoord(movingPiece.col.getX() - 2, movingPiece.row - 1))
 			{
-				if (potential.color != piece.color)
+				if (movingPiece.color != dest.color)
 				{
-					arr.add(new Location(piece.col, piece.row));
+					arr.add(new Location(dest.col, dest.row));
 				}
 			}
 		}
@@ -76,22 +98,6 @@ public class Piece {
 	{
 		int upR, upL, dwnR, dwnL;
 		Piece p = this;
-		return false;
-	}
-	
-	//returns true if this piece can move to that piece as assuming this is a knight
-	
-
-	//returns true if this piece can move to that piece as assuming this is a king
-	private boolean KingLegal(Piece that)
-	{
-		if(Math.abs(that.col.getX() - this.col.getX()) <= 1 && Math.abs(that.row - this.row) <= 1)
-		{
-			if(this.color != that.color)
-			{
-				return true;
-			}
-		}
 		return false;
 	}
 	
@@ -202,18 +208,21 @@ public class Piece {
 
 	public HashMap<Integer,Piece> switchPieces(Piece destinationPiece, HashMap<Integer,Piece> brd) 
 	{
-		Piece desTemp = new Piece (destinationPiece.row, destinationPiece.col, destinationPiece.color, destinationPiece.type);
+		Piece movingPiece = this;
+		Piece movTemp = this;
 		
-		destinationPiece.col = this.col;
-		destinationPiece.row = this.row;
+		movingPiece.col = destinationPiece.col;
+		movingPiece.row = destinationPiece.row;
 		
-		this.col = desTemp.col;
-		this.row = desTemp.row;
+		destinationPiece.col = movTemp.col;
+		destinationPiece.row = movTemp.row;
+		
+		
 		
 		if (destinationPiece.color != Color.BLUE)
 		{
 			System.out.println("REMOVED");
-			brd.remove(this);
+			brd.remove(movTemp);
 		}
 		return brd;
 	}
