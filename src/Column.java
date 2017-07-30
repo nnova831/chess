@@ -27,4 +27,6 @@ public enum Column {
 		return ((8 - row) * 8) + this.getX();	
 	}
 	
+	
+	
 }

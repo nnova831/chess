@@ -18,36 +18,60 @@ public class Piece {
 		this.type = type;
 		this.row = row;
 		this.col = col;
-		this.index = findIndex();
+		this.index = colToIndex();
 	}
 	
-	public int findIndex() {
-		return this.col.getIndex(row);
-	}
+	public ArrayList<Location> setPossibleMovesArray (HashMap<Integer, Piece> brd) // Given a piece, return all possible moves
+	{
+		Piece p = this;
+		switch (p.type) {
+			case KNIGHT:
+				return setKnightArray(p, brd);
+			default:
+				break;
+			}    
+		return null;
+	} 
 
 	//isLegal: takes a piece of destination and determines if this piece is allowed to make that move
   	public boolean isLegal(Piece that, HashMap<Integer, Piece> b) {
-  		if(this.possibleMoves.contains(new Point(that.col.getX(), (8 - that.row))))
+  		for (int i = 0; i < this.possibleMoves.size(); i++)
   		{
-  			return true;
-  		}
-  		else
-  		{
-  			switch (this.type) 
+  			if (this.possibleMoves.get(i).col == that.col && this.possibleMoves.get(i).row == that.row)
   			{
-  			case KNIGHT:
-  				return this.KnightLegal(that);
-  			case KING: 
-  				return this.KingLegal(that);
-  			case ROOK:
-  				return this.RookLegal(that, b);
-  			default:
-  				return false;
+	  			System.out.println("New Method");
+	  			return true;
   			}
   		}
+  		return false;
   	}
-	
-  	//returns true if this piece can move to that piece as assuming this is a bishop
+  	private ArrayList <Location> setKnightArray (Piece potential, HashMap <Integer, Piece> brd)
+	{
+  		ArrayList <Location> arr = new ArrayList<>();
+		for (int i = 0; i < 64; i++)
+		{
+			Piece piece = brd.get(i);
+			if (piece.equalsCoord(potential.col.getX() + 1, potential.row + 2)
+				|| piece.equalsCoord(potential.col.getX() + 2, potential.row + 1)
+				|| piece.equalsCoord(potential.col.getX() + 1, potential.row - 2)
+				|| piece.equalsCoord(potential.col.getX() + 2, potential.row - 1)
+				|| piece.equalsCoord(potential.col.getX() - 1, potential.row + 2)
+				|| piece.equalsCoord(potential.col.getX() - 2, potential.row + 1)
+				|| piece.equalsCoord(potential.col.getX() - 1, potential.row - 2)
+				|| piece.equalsCoord(potential.col.getX() - 2, potential.row - 1))
+			{
+				if (potential.color != piece.color)
+				{
+					arr.add(new Location(piece.col, piece.row));
+				}
+			}
+		}
+//		System.out.println(this.type + " (" + this.col +", "+this.row+")   " + arr);
+		return arr;
+		
+	}
+
+	//returns true if this piece can move to that piece as assuming this is a bishop
 	private boolean BishopLegal(Piece that, HashMap<Integer, Piece> brd)
 	{
 		int upR, upL, dwnR, dwnL;
@@ -56,30 +80,7 @@ public class Piece {
 	}
 	
 	//returns true if this piece can move to that piece as assuming this is a knight
-	private boolean KnightLegal(Piece that)
-	{
-		if(Math.abs(that.col.getX() - this.col.getX()) == 1 && Math.abs(that.row - this.row) == 2)
-		{
-			if(this.color == that.color)
-			{
-				return false;
-			}else
-			{
-				return true;
-			}
-		}
-		else if(Math.abs(that.col.getX() - this.col.getX()) == 2 && Math.abs(that.row - this.row) == 1)
-		{
-			if(this.color == that.color)
-			{
-				return false;
-			}else
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+	
 
 	//returns true if this piece can move to that piece as assuming this is a king
 	private boolean KingLegal(Piece that)
@@ -95,7 +96,7 @@ public class Piece {
 	}
 	
 	//returns true if this piece can move to that piece as assuming this is a rook
-	private boolean RookLegal(Piece that, HashMap <Integer, Piece> brd)
+/*	private boolean RookLegal(Piece that, HashMap <Integer, Piece> brd)
 	{
 		int a, b;
 		
@@ -144,9 +145,20 @@ public class Piece {
 			}
 		}
 		return this.RookLegal(that, brd);
+	}*/
+	
+	// this = moving piece
+	//public void switchPieces (Piece destination, HashMap <Integer, >)
+	{
+		
 	}
 
-	// OVERRIDE: prints out the index in array (which is converted to an 
+	public int colToIndex() 
+	{
+		return this.col.getIndex(row);
+	}
+
+	// prints out the index in array (which is converted to an 
 	// int later to find the corresponding Piece) instead of memory address
 	public String toStringIndex()
 	{
@@ -165,6 +177,7 @@ public class Piece {
 		return sb.toString();
 	}
 	
+	
 	//returns true if this and comparable have equal x and y's
 	public boolean equalsCoord(Piece comparable)
 	{
@@ -172,8 +185,9 @@ public class Piece {
 	}
 	
 	//returns true if this has the same x as i and the same y as j
-	public boolean equalsCoord(int i, int j) {
-		return this.col.getX() == i && this.row == j;
+	public boolean equalsCoord(int a, int n) 
+	{
+		return this.col.getX() == a && this.row == n;
 	}
 	
 	//OVERRIDES the equals method so we can compare temporary objects to the original object in the array
@@ -185,5 +199,22 @@ public class Piece {
 				this.col.getX() == comparable.col.getX() &&
 				this.row == comparable.row);
 	}
-	
+
+	public HashMap<Integer,Piece> switchPieces(Piece destinationPiece, HashMap<Integer,Piece> brd) 
+	{
+		Piece desTemp = new Piece (destinationPiece.row, destinationPiece.col, destinationPiece.color, destinationPiece.type);
+		
+		destinationPiece.col = this.col;
+		destinationPiece.row = this.row;
+		
+		this.col = desTemp.col;
+		this.row = desTemp.row;
+		
+		if (destinationPiece.color != Color.BLUE)
+		{
+			System.out.println("REMOVED");
+			brd.remove(this);
+		}
+		return brd;
+	}
 }

@@ -1,13 +1,18 @@
 
 public class Location {
 	
-	private Column col;
-	private int row;
+	Column col;
+	int row;
 
 	public Location (Column c, int yCoor)
 	{
 		col = c;
 		row = yCoor;
+	}
+	
+	public boolean equals (Location that)
+	{
+		return (this.col.getX() == that.col.getX() && this.row == that.row);
 	}
 	
 	public String toString ()
