@@ -48,12 +48,19 @@ public class Board {
 		board.put(Column.D.getIndex(8), new Piece(8, Column.D, Color.BLACK, pieceType.QUEEN));
 		board.put(Column.E.getIndex(8), new Piece(8, Column.E, Color.BLACK, pieceType.KING));
 		
-		
+		// real version
 		for (Column col : Column.values()) 
 		{
-			board.put(col.getIndex(7), new Piece(7, col, Color.BLUE, pieceType.EMPTY));
-			board.put(col.getIndex(2), new Piece(2, col, Color.BLUE, pieceType.EMPTY));
+			board.put(col.getIndex(7), new Piece(7, col, Color.BLACK, pieceType.PAWN));
+			board.put(col.getIndex(2), new Piece(2, col, Color.WHITE, pieceType.PAWN));
 		}
+		// test version with no pawns
+//		for (Column col : Column.values()) 
+//		{
+//			board.put(col.getIndex(7), new Piece(7, col, Color.BLUE, pieceType.EMPTY));
+//			board.put(col.getIndex(2), new Piece(2, col, Color.BLUE, pieceType.EMPTY));
+//		}
+		
 		
 		board.put(Column.A.getIndex(1), new Piece(1, Column.A, Color.WHITE, pieceType.ROOK));
 		board.put(Column.H.getIndex(1), new Piece(1, Column.H, Color.WHITE, pieceType.ROOK));
@@ -75,19 +82,19 @@ public class Board {
 		drawBoard();
 		frame.setVisible(true);
 		updatePossibleMoves(board);
+		System.out.println(toStringArray(board));
 	}
 	
     private void updatePossibleMoves (HashMap <Integer, Piece> brd) 
     {
     	for (int i = 0; i <64; i++) // for (int i = 0; i < 64; i++) does the same thing
-    	{
+    	{	
 			if (brd.get(i).type != pieceType.EMPTY)
 			{
 				brd.get(i).possibleMoves = brd.get(i).setPossibleMovesArray (brd);
 			}
 //			System.out.println(brd.get(i).col +","+ brd.get(i).row+" " +brd.get(i).type
 //					+ " "+brd.get(i).possibleMoves);
-			
     	}
     }
        
@@ -171,7 +178,8 @@ public class Board {
 			sb.append("\n");
 	    	sb.append("Type: " + brd.get(piece.colToIndex()).type);
 	    	sb.append("("+brd.get(piece.colToIndex()).col + ", " + brd.get(piece.colToIndex()).row + ")");
-		}
+	    	sb.append("   " + brd.get(piece.colToIndex()).color);
+	    }
 		return sb.toString();
 	}
         
@@ -250,7 +258,8 @@ public class Board {
 					if (isItLegal)
 					{
 						board = movingPiece.switchPieces(destinationPiece, board);
-						System.out.println(toStringArray(board));
+//						frame.getContentPane().removeAll();
+						updatePossibleMoves (board);
 						drawBoard();
 					}
 				}

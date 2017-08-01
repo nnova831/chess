@@ -34,29 +34,135 @@ public class Piece {
   		return false;
   	}
   	
-  	
   	public ArrayList<Location> setPossibleMovesArray (HashMap<Integer, Piece> brd) // Given a piece, return all possible moves
 	{
-		Piece p = this;
-		switch (p.type) {
+		switch (this.type) {
 			case KNIGHT:
-				return setKnightArray(p, brd);
+				return setKnightArray (this, brd);
 			case KING:
-				return setKingArray (p, brd);
+				return setKingArray (this, brd);
+			case ROOK:
+				return setRookArray (this, brd);
+			case BISHOP:
+				return setBishopArray (this, brd);
+			case PAWN:
+				return setPawnArray (this, brd);
 			default:
 				break;
 			}    
 		return null;
 	}
+  	
+  	private ArrayList <Location> setRookArray (Piece moving, HashMap <Integer, Piece> brd)
+	{
+		ArrayList <Location> arr = new ArrayList <>();
+		for (int i = 0; i < 64; i++)
+		{
+			if (brd.get(i).col.getX() == moving.col.getX() || brd.get(i).row == moving.row)
+			{
+				if (moving.RookLegal(brd.get(i), brd))
+				{
+					arr.add (new Location (brd.get(i).col, brd.get(i).row));
+				}
+			}
+		}
+		return arr;
+	}
 
+	//returns true if this piece can move to that piece as assuming this is a rook
+	private boolean RookLegal(Piece that, HashMap <Integer, Piece> brd)
+	{
+		Piece p = new Piece (this.row, this.col, this.color, this.type);
+		int a, b;
+		
+		if((that.col.getX() - p.col.getX()) == 0)
+		{
+			if((that.row - this.row) < 0) //straight up
+			{
+				a = 0;
+				b = -1;
+			}else if (that.row - p.row > 0) //straight down
+			{
+				a = 0;
+				b = 1;
+			}
+			else
+			{
+				return p.color != that.color;
+			}
+		}	
+		else if((that.row - p.row) == 0)
+		{
+			if((that.col.getX() - p.col.getX()) < 0) //left
+			{
+				a = -1;
+				b = 0;
+			}else //right
+			{
+				a = 1;
+				b = 0;
+			}
+		}
+		else
+		{
+			return false;
+		}
+		
+		for (int i = 0; i < brd.size(); i++)
+		{
+			if (brd.get(i).equalsCoord(p.col.getX() + a, p.row + b))
+			{
+				if(brd.get(i).type != pieceType.EMPTY && !brd.get(i).equals(that)){
+					return false;
+				}
+				p.col = brd.get(i).col;
+				p.row = brd.get(i).row;
+			}
+		}
+		return p.RookLegal(that, brd);
+	}
+
+	private ArrayList <Location> setPawnArray (Piece moving, HashMap <Integer, Piece> brd)
+  	{
+  		ArrayList <Location> arr = new ArrayList <>();
+  		for (int i = 0; i < brd.size(); i ++)
+  		{
+  			if (moving.row + 1 == brd.get(i).row && moving.col == brd.get(i).col)
+  			{
+  				if(brd.get(i).color == Color.BLUE)
+				{
+					arr.add(new Location(brd.get(i).col, brd.get(i).row));
+				}
+  			}
+  			if (moving.row + 1 == brd.get(i).row && Math.abs(moving.col.getX() - brd.get(i).col.getX()) == 1)
+  			{
+  				if (brd.get(i).color != Color.BLUE)
+  				{
+  					arr.add(new Location(brd.get(i).col, brd.get(i).row));
+  				}
+  			}
+  		}
+  		return arr;
+  	}
+  	
+  	private ArrayList <Location> setQueenArray (Piece moving, HashMap <Integer, Piece> brd)
+  	{
+  		return null;
+  	}
+  	
+  	private ArrayList <Location> setBishopArray (Piece moving, HashMap <Integer, Piece> brd)
+  	{
+  		return null;
+  	}
+  	
   	private ArrayList <Location> setKingArray (Piece moving, HashMap<Integer, Piece> brd)
   	{
   		ArrayList<Location> arr = new ArrayList<>();
   		for (int i = 0; i < 64; i++)
   		{
   			Piece dest = brd.get(i);
-	  		if(Math.abs(moving.col.getX() - dest.col.getX()) <= 1 && 
-	  			Math.abs(moving.row - dest.row) <= 1)
+	  		if(Math.abs(moving.col.getX() - dest.col.getX()) <= 1 
+	  				&& Math.abs(moving.row - dest.row) <= 1)
 			{
 				if(dest.color != moving.color)
 				{
@@ -70,6 +176,7 @@ public class Piece {
 	private ArrayList <Location> setKnightArray (Piece movingPiece, HashMap <Integer, Piece> brd)
 	{
   		ArrayList <Location> arr = new ArrayList<>();
+  		
 		for (int i = 0; i < 64; i++)
 		{
 			Piece dest = brd.get(i);
@@ -101,62 +208,25 @@ public class Piece {
 		return false;
 	}
 	
-	//returns true if this piece can move to that piece as assuming this is a rook
-/*	private boolean RookLegal(Piece that, HashMap <Integer, Piece> brd)
+	public HashMap<Integer,Piece> switchPieces(Piece destinationPiece, HashMap<Integer,Piece> brd) 
 	{
-		int a, b;
+		Location movTemp = new Location (this.col, this.row);
 		
-		if((that.col.getX() - this.col.getX()) == 0)
-		{
-			if((that.row - this.row) < 0) //straight up
-			{
-				a = 0;
-				b = -1;
-			}else if (that.row - this.row > 0) //straight down
-			{
-				a = 0;
-				b = 1;
-			}
-			else
-			{
-				return this.color != that.color;
-			}
-		}	
-		else if((that.row - this.row) == 0)
-		{
-			if((that.col.getX() - this.col.getX()) < 0) //left
-			{
-				a = -1;
-				b = 0;
-			}else //right
-			{
-				a = 1;
-				b = 0;
-			}
-		}
-		else
-		{
-			return false;
-		}
+		this.col = destinationPiece.col;
+		this.row = destinationPiece.row;
 		
-		for (int i = 0; i < brd.size(); i++)
-		{
-			if (brd.get(i).equalsCoord(this.col.getX() + a, this.row + b))
-			{
-				if(brd.get(i).type != pieceType.EMPTY && !brd.get(i).equals(that)){
-					return false;
-				}
-				this.col = brd.get(i).col;
-				this.row = brd.get(i).row;
-			}
-		}
-		return this.RookLegal(that, brd);
-	}*/
-	
-	// this = moving piece
-	//public void switchPieces (Piece destination, HashMap <Integer, >)
-	{
+		destinationPiece.col = movTemp.col;
+		destinationPiece.row = movTemp.row;
 		
+		if (destinationPiece.color != Color.BLUE)
+		{
+			System.out.println("REMOVED");
+			brd.remove(destinationPiece.index);
+			brd.put(destinationPiece.index, new Piece (destinationPiece.row, 
+					destinationPiece.col, Color.BLUE, pieceType.EMPTY));
+			System.out.println(toStringArray(brd));
+		}
+		return brd;
 	}
 
 	public int colToIndex() 
@@ -205,22 +275,16 @@ public class Piece {
 				this.col.getX() == comparable.col.getX() &&
 				this.row == comparable.row);
 	}
-
-	public HashMap<Integer,Piece> switchPieces(Piece destinationPiece, HashMap<Integer,Piece> brd) 
-	{
-		Location movTemp = new Location (this.col, this.row);
-		
-		this.col = destinationPiece.col;
-		this.row = destinationPiece.row;
-		
-		destinationPiece.col = movTemp.col;
-		destinationPiece.row = movTemp.row;
-		
-		if (destinationPiece.color != Color.BLUE)
-		{
-			System.out.println("REMOVED");
-			brd.remove(movTemp);
-		}
-		return brd;
+	  public String toStringArray (HashMap<Integer, Piece> brd)
+	{	
+		StringBuilder sb = new StringBuilder ();
+		for (Piece piece: brd.values())
+	    {
+			sb.append("\n");
+	    	sb.append("Type: " + brd.get(piece.colToIndex()).type);
+	    	sb.append("("+brd.get(piece.colToIndex()).col + ", " + brd.get(piece.colToIndex()).row + ")");
+	    	sb.append("   " + brd.get(piece.colToIndex()).color);
+	    }
+		return sb.toString();
 	}
 }
