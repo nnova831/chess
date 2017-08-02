@@ -38,7 +38,7 @@ public class Board {
 	//setDefaultBoard: takes arraylist of the board and clears it, then add's the default start to the game
 	private void setDefaultBoard(){
 		board = new HashMap<>();
-		//(int row, Column col, Color color, pieceType type)
+		
 		board.put(Column.A.getIndex(8), new Piece(8, Column.A, Color.BLACK, pieceType.ROOK));
 		board.put(Column.H.getIndex(8), new Piece(8, Column.H, Color.BLACK, pieceType.ROOK));
 		board.put(Column.B.getIndex(8), new Piece(8, Column.B, Color.BLACK, pieceType.KNIGHT));
@@ -82,17 +82,19 @@ public class Board {
 		
 		drawBoard();
 		frame.setVisible(true);
-		updatePossibleMoves(board);
-		System.out.println(toStringArray(board));
+		updatePossibleMoves();
+		System.out.println(toStringArray());
 	}
 	
-    private void updatePossibleMoves (HashMap <Integer, Piece> brd) 
+	//updatePossibleMoves: uses the current board to set its piece's with the right array of possibleMoves,
+	//						based on the state of the board and the type
+    private void updatePossibleMoves() 
     {
     	for (int i = 0; i <64; i++) // for (int i = 0; i < 64; i++) does the same thing
     	{	
-			if (brd.get(i).type != pieceType.EMPTY)
+			if (board.get(i).type != pieceType.EMPTY)
 			{
-				brd.get(i).possibleMoves = brd.get(i).setPossibleMovesArray (brd);
+				board.get(i).possibleMoves = board.get(i).setPossibleMovesArray(board);
 			}
     	}
     }
@@ -177,15 +179,16 @@ public class Board {
 		frame.add(button);
 	}
     
-    public String toStringArray (HashMap<Integer, Piece> brd)
+    //toStringArray: prints out each piece in the current board
+    public String toStringArray()
 	{	
 		StringBuilder sb = new StringBuilder ();
-		for (Piece piece: brd.values())
+		for (Piece piece: board.values())
 	    {
 			sb.append("\n");
 			sb.append(board.get(piece.index).colorToString());
-	    	sb.append(" " + brd.get(piece.index).type);
-	    	sb.append("("+brd.get(piece.index).col + ", " + brd.get(piece.index).row + ")");
+	    	sb.append(" " + board.get(piece.index).type);
+	    	sb.append("("+board.get(piece.index).col + ", " + board.get(piece.index).row + ")");
 	    	sb.append(" i: " + piece.index);
 	    }
 		return sb.toString();
@@ -205,12 +208,8 @@ public class Board {
 				{
 					System.out.println("moving to " + destinationPiece.type + "(" + 
 							destinationPiece.col + "" + destinationPiece.row+")");
-					
-					board = movingPiece.switchPieces(destinationPiece, board);
-					updateBoard();
-					frame.setVisible(true);
-					updatePossibleMoves(board);
-					System.out.println(toStringArray(board));
+					movePiece();
+					System.out.println(toStringArray());
 				}
 			}
 			else
@@ -238,8 +237,19 @@ public class Board {
 			}
 		}
     }
-   
-    private class EndingListener implements ActionListener
+    
+    //movePiece: assumes class variables movingPiece and destinatinoPiece are both occupied
+    //			 performs a switch piece move in the board, and updates the JFrame accordingly
+    //			 also updates the board's piece's possible moves
+    private void movePiece() 
+    {
+    	board = movingPiece.switchPieces(destinationPiece, board);
+		updateBoard();
+		frame.setVisible(true);
+		updatePossibleMoves();
+	}
+
+	private class EndingListener implements ActionListener
     { 
 		
     	public void actionPerformed(ActionEvent e) 

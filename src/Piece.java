@@ -194,19 +194,11 @@ public class Piece {
 				}
 			}
 		}
-//		System.out.println(this.type + " (" + this.col +", "+this.row+")   " + arr);
 		return arr;
-		
-	}
-
-	//returns true if this piece can move to that piece as assuming this is a bishop
-	private boolean BishopLegal(Piece that, HashMap<Integer, Piece> brd)
-	{
-		int upR, upL, dwnR, dwnL;
-		Piece p = this;
-		return false;
 	}
 	
+	//switchPiece: takes the destination piece and an hashmap of the board and returns a board 
+	//				where this piece moves to the destination piece.
 	public HashMap<Integer,Piece> switchPieces(Piece destinationPiece, HashMap<Integer,Piece> brd) 
 	{
 		Location movTemp = new Location (this.col, this.row);
@@ -226,10 +218,20 @@ public class Piece {
 		}
 		return brd;
 	}
-
+	
+	//returns the index of this piece
 	private int Index() 
 	{
 		return this.col.getIndex(row);
+	}
+	
+	// prints out the index in array (which is converted to an 
+	// int later to find the corresponding Piece) instead of memory address
+	public String toStringIndex()
+	{
+		StringBuilder sb = new StringBuilder ();
+		sb.append(this.index);
+		return sb.toString();
 	}
 	
 	//converts this.color to String
@@ -245,40 +247,20 @@ public class Piece {
 			}
 			return "BLUE";
 	}
-
-	// prints out the index in array (which is converted to an 
-	// int later to find the corresponding Piece) instead of memory address
-	public String toStringIndex()
-	{
-		StringBuilder sb = new StringBuilder ();
-		sb.append(this.index);
-		return sb.toString();
-	}
-
-	public String toStringPossibleMoves ()
-	{
-		StringBuilder sb = new StringBuilder (this.type.toString() + " (" + this.col + "" + this.row + ")   Poss Moves: ");
-		for (int i = 0; i < possibleMoves.size(); i++)
-		{
-			sb.append(this.possibleMoves.get(i));
-		}
-		return sb.toString();
-	}
 	
-	
-	//returns true if this and comparable have equal x and y's
+	//POLYMORPH returns true if this and comparable have equal x and y's
 	public boolean equalsCoord(Piece comparable)
 	{
 		return (this.col.getX() == comparable.col.getX() && this.row == comparable.row);
 	}
 	
-	//returns true if this has the same x as i and the same y as j
+	//POLYMORPH returns true if this has the same x as i and the same y as j
 	public boolean equalsCoord(int a, int n) 
 	{
 		return this.col.getX() == a && this.row == n;
 	}
 	
-	//OVERRIDES the equals method so we can compare temporary objects to the original object in the array
+	//OVERRIDE the equals method so we can compare temporary objects to the original object in the array
 	public boolean equals (Piece comparable)
 	{
 		return (this.color == comparable.color &&
