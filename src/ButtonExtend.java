@@ -13,7 +13,7 @@ public class ButtonExtend extends JButton{
 		piece = null;
 	}
 	
-	public ButtonExtend (String s)
+	public ButtonExtend(String s)
 	{
 		super(s);
 	}

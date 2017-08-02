@@ -18,12 +18,11 @@ public class Piece {
 		this.type = type;
 		this.row = row;
 		this.col = col;
-		this.index = colToIndex();
+		this.index = Index();
 	}
 	
 	//isLegal: takes a piece of destination and determines if this piece is allowed to make that move
   	public boolean isLegal(Piece that, HashMap<Integer, Piece> b) {
-  		System.out.println("New Method");
   		for (int i = 0; i < this.possibleMoves.size(); i++)
   		{
   			if (this.possibleMoves.get(i).col == that.col && this.possibleMoves.get(i).row == that.row)
@@ -224,14 +223,27 @@ public class Piece {
 			brd.remove(destinationPiece.index);
 			brd.put(destinationPiece.index, new Piece (destinationPiece.row, 
 					destinationPiece.col, Color.BLUE, pieceType.EMPTY));
-			System.out.println(toStringArray(brd));
 		}
 		return brd;
 	}
 
-	public int colToIndex() 
+	private int Index() 
 	{
 		return this.col.getIndex(row);
+	}
+	
+	//converts this.color to String
+	public String colorToString(){
+		Color theColor = this.color;
+			if (Color.BLACK.equals(theColor)) 
+			{
+				return "BLACK";
+			} 
+			else if (Color.WHITE.equals(theColor)) 
+			{				  
+				return "WHITE";
+			}
+			return "BLUE";
 	}
 
 	// prints out the index in array (which is converted to an 
@@ -275,16 +287,5 @@ public class Piece {
 				this.col.getX() == comparable.col.getX() &&
 				this.row == comparable.row);
 	}
-	  public String toStringArray (HashMap<Integer, Piece> brd)
-	{	
-		StringBuilder sb = new StringBuilder ();
-		for (Piece piece: brd.values())
-	    {
-			sb.append("\n");
-	    	sb.append("Type: " + brd.get(piece.colToIndex()).type);
-	    	sb.append("("+brd.get(piece.colToIndex()).col + ", " + brd.get(piece.colToIndex()).row + ")");
-	    	sb.append("   " + brd.get(piece.colToIndex()).color);
-	    }
-		return sb.toString();
-	}
+	
 }
