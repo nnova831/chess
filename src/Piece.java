@@ -33,7 +33,7 @@ public class Piece {
   		return false;
   	}
   	
-  	public ArrayList<Location> setPossibleMovesArray (HashMap<Integer, Piece> brd) // Given a piece, return all possible moves
+	public ArrayList<Location> setPossibleMovesArray (HashMap<Integer, Piece> brd) // Given a piece, return all possible moves
 	{
 		switch (this.type) {
 			case KNIGHT:
@@ -55,71 +55,126 @@ public class Piece {
   	private ArrayList <Location> setRookArray (Piece moving, HashMap <Integer, Piece> brd)
 	{
 		ArrayList <Location> arr = new ArrayList <>();
-		for (int i = 0; i < 64; i++)
+		
+		ArrayList <Piece> Up = new ArrayList <>();
+		ArrayList <Piece> Down = new ArrayList <>();
+		ArrayList <Piece> Left = new ArrayList <>();
+		ArrayList <Piece> Right = new ArrayList <>();
+		
+		for (int i = 0; i < 64; i ++)
 		{
-			if (brd.get(i).col.getX() == moving.col.getX() || brd.get(i).row == moving.row)
+			Piece pDest = brd.get(i);
+			if (pDest.col.getX() == moving.col.getX())
 			{
-				if (moving.RookLegal(brd.get(i), brd))
+				if (pDest.row > moving.row)
 				{
-					arr.add (new Location (brd.get(i).col, brd.get(i).row));
+					Up.add(pDest);
+//					Up = sort (Up, 1);
+				}
+				else if (pDest.row < moving.row)
+				{
+					Down.add (pDest);
+//					Down = sort (Down, 1);
+				}
+			}
+			else if (pDest.row == moving.row)
+			{
+				if (pDest.col.getX() < moving.col.getX())
+				{
+					Left.add(pDest);
+//					Left = sort (Left, 0);
+				}
+				else if (pDest.row < moving.row)
+				{
+					Right.add(pDest);
+//					Right = sort (Right, 0);
 				}
 			}
 		}
+		for (int i = 0; i < Up.size(); i ++)
+		{
+			Piece p = Up.get(Up.size() - 1 - i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.col, p.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.col, p.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}
+		
+		for (int i = 0; i < Down.size(); i ++)
+		{
+			Piece p = Down.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.col, p.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.col, p.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}
+		for (int i = 0; i < Left.size(); i ++)
+		{
+			Piece p = Left.get(Left.size() - 1 - i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.col, p.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.col, p.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}
+		for (int i = 0; i < Right.size(); i ++)
+		{
+			Piece p = Right.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.col, p.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.col, p.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
 		return arr;
 	}
-
-	//returns true if this piece can move to that piece as assuming this is a rook
-	private boolean RookLegal(Piece that, HashMap <Integer, Piece> brd)
-	{
-		Piece p = new Piece (this.row, this.col, this.color, this.type);
-		int a, b;
-		
-		if((that.col.getX() - p.col.getX()) == 0)
-		{
-			if((that.row - this.row) < 0) //straight up
-			{
-				a = 0;
-				b = -1;
-			}else if (that.row - p.row > 0) //straight down
-			{
-				a = 0;
-				b = 1;
-			}
-			else
-			{
-				return p.color != that.color;
-			}
-		}	
-		else if((that.row - p.row) == 0)
-		{
-			if((that.col.getX() - p.col.getX()) < 0) //left
-			{
-				a = -1;
-				b = 0;
-			}else //right
-			{
-				a = 1;
-				b = 0;
-			}
-		}
-		else
-		{
-			return false;
-		}
-		
-		for (int i = 0; i < brd.size(); i++)
-		{
-			if (brd.get(i).equalsCoord(p.col.getX() + a, p.row + b))
-			{
-				if(brd.get(i).type != pieceType.EMPTY && !brd.get(i).equals(that)){
-					return false;
-				}
-				p.col = brd.get(i).col;
-				p.row = brd.get(i).row;
-			}
-		}
-		return p.RookLegal(that, brd);
-	}
+  	
+  	// Doesnt work yet/ assume it does
+  	private ArrayList<Location> sort (ArrayList <Location> a, int bin) // 0: sort x    1:sort y
+  	{
+  		return null;
+  	}
 
 	private ArrayList <Location> setPawnArray (Piece moving, HashMap <Integer, Piece> brd)
   	{
@@ -179,14 +234,14 @@ public class Piece {
 		for (int i = 0; i < 64; i++)
 		{
 			Piece dest = brd.get(i);
-			if (dest.equalsCoord(movingPiece.col.getX() + 1, movingPiece.row + 2)
-				|| dest.equalsCoord(movingPiece.col.getX() + 2, movingPiece.row + 1)
-				|| dest.equalsCoord(movingPiece.col.getX() + 1, movingPiece.row - 2)
-				|| dest.equalsCoord(movingPiece.col.getX() + 2, movingPiece.row - 1)
-				|| dest.equalsCoord(movingPiece.col.getX() - 1, movingPiece.row + 2)
-				|| dest.equalsCoord(movingPiece.col.getX() - 2, movingPiece.row + 1)
-				|| dest.equalsCoord(movingPiece.col.getX() - 1, movingPiece.row - 2)
-				|| dest.equalsCoord(movingPiece.col.getX() - 2, movingPiece.row - 1))
+			if (dest.equalsCoord(movingPiece.col.getX() + 1, movingPiece.row + 2)     	
+				|| dest.equalsCoord(movingPiece.col.getX() + 2, movingPiece.row + 1)					
+				|| dest.equalsCoord(movingPiece.col.getX() + 1, movingPiece.row - 2)	
+				|| dest.equalsCoord(movingPiece.col.getX() + 2, movingPiece.row - 1)	
+				|| dest.equalsCoord(movingPiece.col.getX() - 1, movingPiece.row + 2)	
+				|| dest.equalsCoord(movingPiece.col.getX() - 2, movingPiece.row + 1)	
+				|| dest.equalsCoord(movingPiece.col.getX() - 1, movingPiece.row - 2)	
+				|| dest.equalsCoord(movingPiece.col.getX() - 2, movingPiece.row - 1))	
 			{
 				if (movingPiece.color != dest.color)
 				{
