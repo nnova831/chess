@@ -1,15 +1,10 @@
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.text.html.HTMLDocument.Iterator;
 
 public class Board {
 	
@@ -21,6 +16,7 @@ public class Board {
 	private Piece movingPiece;
 	private Piece destinationPiece;
 	private boolean isSecond = false;
+	Color turn = Color.WHITE;
 	
 	public static void main(String[] args) {		
 		Board b = new Board();
@@ -49,18 +45,18 @@ public class Board {
 		board.put(Column.E.getIndex(8), new Piece(8, Column.E, Color.BLACK, pieceType.KING));
 		
 		// real version
-		for (Column col : Column.values()) 
-		{
-			board.put(col.getIndex(7), new Piece(7, col, Color.BLACK, pieceType.PAWN));
-			board.put(col.getIndex(2), new Piece(2, col, Color.WHITE, pieceType.PAWN));
-		}
-		
-		// test version with no pawns
 //		for (Column col : Column.values()) 
 //		{
-//			board.put(col.getIndex(7), new Piece(7, col, Color.BLUE, pieceType.EMPTY));
-//			board.put(col.getIndex(2), new Piece(2, col, Color.BLUE, pieceType.EMPTY));
+//			board.put(col.getIndex(7), new Piece(7, col, Color.BLACK, pieceType.PAWN));
+//			board.put(col.getIndex(2), new Piece(2, col, Color.WHITE, pieceType.PAWN));
 //		}
+		
+		// test version with no pawns
+		for (Column col : Column.values()) 
+		{
+			board.put(col.getIndex(7), new Piece(7, col, Color.BLUE, pieceType.EMPTY));
+			board.put(col.getIndex(2), new Piece(2, col, Color.BLUE, pieceType.EMPTY));
+		}
 		
 		board.put(Column.A.getIndex(1), new Piece(1, Column.A, Color.WHITE, pieceType.ROOK));
 		board.put(Column.H.getIndex(1), new Piece(1, Column.H, Color.WHITE, pieceType.ROOK));
@@ -83,7 +79,6 @@ public class Board {
 		drawBoard();
 		frame.setVisible(true);
 		updatePossibleMoves();
-		System.out.println(toStringArray());
 	}
 	
 	//updatePossibleMoves: uses the current board to set its piece's with the right array of possibleMoves,
@@ -103,7 +98,6 @@ public class Board {
     private void drawBoard() 
     {
     	frame.repaint();
-    	
     	for (Piece piece: board.values())
     	{
     		createButton(piece);
@@ -119,7 +113,7 @@ public class Board {
 	}
 	
     //createButton: takes piece and draws it on the board
-    private void createButton(Piece p) {
+    private void createButton (Piece p) {
     	ButtonExtend button;
     	if(p.type == null) //if a piece's type is null, than its a fuker button (fix issue at some point?)
     	{
@@ -129,7 +123,7 @@ public class Board {
     	}
     	else //not null is one of the pieceType enums
     	{
-    		button = new ButtonExtend(p.type.toString().substring(0,2));
+    		button = new ButtonExtend (p.col+""+p.row);
     		
     		//add image depending on the enum type
 			String img = null;
@@ -209,7 +203,14 @@ public class Board {
 					System.out.println("moving to " + destinationPiece.type + "(" + 
 							destinationPiece.col + "" + destinationPiece.row+")");
 					movePiece();
-					System.out.println(toStringArray());
+					if (turn == Color.WHITE)
+					{
+						turn = Color.BLACK;
+					}
+					else if (turn == Color.BLACK)
+					{
+						turn = Color.WHITE;
+					}
 				}
 			}
 			else
@@ -220,9 +221,14 @@ public class Board {
 			}
 		}
 		else
-		{
+		{			
 			if(board.get(indexOf).type != pieceType.EMPTY)
 			{
+				if (board.get(indexOf).color != turn)
+				{
+					System.out.println("That is Not Your Piece");
+					return;
+				}
 				System.out.println(board.get(indexOf).colorToString() + ", " + board.get(indexOf).type + " (" + 
 						board.get(indexOf).col +", "+board.get(indexOf).row+")   PossMoves:" + board.get(indexOf).possibleMoves);
 				movingPiece = board.get(indexOf);
@@ -237,7 +243,6 @@ public class Board {
 			}
 		}
     }
-    
     //movePiece: assumes class variables movingPiece and destinatinoPiece are both occupied
     //			 performs a switch piece move in the board, and updates the JFrame accordingly
     //			 also updates the board's piece's possible moves
@@ -245,8 +250,8 @@ public class Board {
     {
     	board = movingPiece.switchPieces(destinationPiece, board);
 		updateBoard();
-		frame.setVisible(true);
 		updatePossibleMoves();
+		frame.setVisible(true);
 	}
 
 	private class EndingListener implements ActionListener

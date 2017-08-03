@@ -1,5 +1,4 @@
 import java.awt.Color;
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -69,12 +68,10 @@ public class Piece {
 				if (pDest.row > moving.row)
 				{
 					Up.add(pDest);
-//					Up = sort (Up, 1);
 				}
 				else if (pDest.row < moving.row)
 				{
 					Down.add (pDest);
-//					Down = sort (Down, 1);
 				}
 			}
 			else if (pDest.row == moving.row)
@@ -82,18 +79,21 @@ public class Piece {
 				if (pDest.col.getX() < moving.col.getX())
 				{
 					Left.add(pDest);
-//					Left = sort (Left, 0);
 				}
 				else if (pDest.row < moving.row)
 				{
 					Right.add(pDest);
-//					Right = sort (Right, 0);
 				}
 			}
 		}
+		Up = sortStraights (Up);
+		Down = sortStraights (Down);
+		Left = sortStraights (Left);
+		Right = sortStraights (Right);
+		
 		for (int i = 0; i < Up.size(); i ++)
 		{
-			Piece p = Up.get(Up.size() - 1 - i);
+			Piece p = Up.get(i);
 			if (p.type == pieceType.EMPTY)
 			{
 				arr.add(new Location (p.col, p.row));
@@ -109,7 +109,7 @@ public class Piece {
 			}
 		}
 		
-		for (int i = 0; i < Down.size(); i ++)
+		for (int i = Down.size() - 1; i >= 0; i --)
 		{
 			Piece p = Down.get(i);
 			if (p.type == pieceType.EMPTY)
@@ -126,9 +126,9 @@ public class Piece {
 				break;
 			}
 		}
-		for (int i = 0; i < Left.size(); i ++)
+		for (int i = Left.size() - 1; i >= 0; i --)
 		{
-			Piece p = Left.get(Left.size() - 1 - i);
+			Piece p = Left.get(i);
 			if (p.type == pieceType.EMPTY)
 			{
 				arr.add(new Location (p.col, p.row));
@@ -159,22 +159,180 @@ public class Piece {
 			{
 				break;
 			}
+		}	
+		return arr;
+	}
+  	private ArrayList <Location> setBishopArray (Piece moving, HashMap <Integer, Piece> brd)
+	{
+		ArrayList <Location> arr = new ArrayList <>();
+		
+		ArrayList <Piece> NE = new ArrayList <>();
+		ArrayList <Piece> NW = new ArrayList <>();
+		ArrayList <Piece> SE = new ArrayList <>();
+		ArrayList <Piece> SW = new ArrayList <>();
+		
+		for (int i = 0; i < 64; i ++)
+		{
+			Piece pDest = brd.get(i);
+			if (pDest.col.getX() - moving.col.getX() != 0 && pDest.row - moving.row != 0)
+			{
+				if ((double)(pDest.row - moving.row) / (pDest.col.getX() - moving.col.getX()) == 1)
+				{
+					if ((pDest.col.getX() - moving.col.getX() > 0))
+					{
+						NE.add(pDest);
+					}
+					else if (pDest.col.getX() - moving.col.getX() < 0)
+					{
+						SW.add(pDest);
+					}
+				}
+				if ((double)(pDest.row - moving.row) / (pDest.col.getX() - moving.col.getX()) == -1)
+				{
+					if (pDest.col.getX() - moving.col.getX() > 0)
+					{
+						SE.add(pDest);
+					}
+					else if (pDest.col.getX() - moving.col.getX() < 0)
+					{
+						NW.add(pDest);
+					}
+				}
+			}
 		}
+		NE = sortDiags (NE);
+		NW = sortDiags (NW);
+		SE = sortDiags (SE);
+		SW = sortDiags (SW);
+//		for (int i = 0; i < NE.size(); i++)
+//		{
+//			System.out.println(NE.get(i).col +""+NE.get(i).row);
+//		}
+//		for (int i = 0; i < NW.size(); i++)
+//		{
+//			System.out.println(NW.get(i).col +""+NW.get(i).row);
+//		}
+//		for (int i = 0; i < SE.size(); i++)
+//		{
+//			System.out.println(SE.get(i).col +""+SE.get(i).row);
+//		}
+//		for (int i = 0; i < SW.size(); i++)
+//		{
+//			System.out.println(SW.get(i).col +""+SW.get(i).row);
+//		}
 		
+		for (int i = 0; i < NE.size(); i ++)
+		{
+			Piece p = NE.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.col, p.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.col, p.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}
+
+		for (int i = 0; i < NW.size(); i ++)
+		{
+			Piece p = NW.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.col, p.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.col, p.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}	
 		
-		
-		
-		
-		
-		
+		for (int i = SE.size() - 1; i >= 0; i --)
+		{
+			Piece p = SE.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.col, p.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.col, p.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}
+		for (int i = SW.size() - 1; i >= 0; i --)
+		{
+			Piece p = SW.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.col, p.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.col, p.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}
 		return arr;
 	}
   	
+  	
   	// Doesnt work yet/ assume it does
-  	private ArrayList<Location> sort (ArrayList <Location> a, int bin) // 0: sort x    1:sort y
+  	private ArrayList<Piece> sortStraights (ArrayList <Piece> a) // 0: sort x    1:sort y
   	{
-  		return null;
+  		for (int i = 0; i < a.size(); i ++)
+  		{
+  			int min = i;
+  			for (int j = i+1; j < a.size(); j++)
+  			{
+  				if (a.get(min).row + a.get(min).col.getX() > a.get(j).row + a.get(j).col.getX())
+  				{
+  					min = j;
+  				}
+  			}
+  			Piece temp = a.get(i);
+  			a.set(i, a.get(min));
+  			a.set(min, temp);
+  		}
+  		return a;
   	}
+  	private ArrayList<Piece> sortDiags (ArrayList <Piece> a) // 0: sort x    1:sort y
+  	{
+  		for (int i = 0; i < a.size(); i ++)
+  		{
+  			int min = i;
+  			for (int j = i+1; j < a.size(); j++)
+  			{
+  				if (a.get(min).row > a.get(j).row)
+  				{
+  					min = j;
+  				}
+  			}
+  			Piece temp = a.get(i);
+  			a.set(i, a.get(min));
+  			a.set(min, temp);
+  		}
+  		return a;
+  	}
+  	
 
 	private ArrayList <Location> setPawnArray (Piece moving, HashMap <Integer, Piece> brd)
   	{
@@ -200,11 +358,6 @@ public class Piece {
   	}
   	
   	private ArrayList <Location> setQueenArray (Piece moving, HashMap <Integer, Piece> brd)
-  	{
-  		return null;
-  	}
-  	
-  	private ArrayList <Location> setBishopArray (Piece moving, HashMap <Integer, Piece> brd)
   	{
   		return null;
   	}
@@ -252,8 +405,8 @@ public class Piece {
 		return arr;
 	}
 	
-	//switchPiece: takes the destination piece and an hashmap of the board and returns a board 
-	//				where this piece moves to the destination piece.
+	//switchPiece: takes the destination piece and an hashmap of the board and returns a 
+	//board where this piece moves to the destination piece.
 	public HashMap<Integer,Piece> switchPieces(Piece destinationPiece, HashMap<Integer,Piece> brd) 
 	{
 		Location movTemp = new Location (this.col, this.row);
