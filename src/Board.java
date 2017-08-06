@@ -35,14 +35,14 @@ public class Board {
 	private void setDefaultBoard(){
 		board = new HashMap<>();
 		
-		board.put(Column.A.getIndex(8), new Piece(8, Column.A, Color.BLACK, pieceType.ROOK));
-		board.put(Column.H.getIndex(8), new Piece(8, Column.H, Color.BLACK, pieceType.ROOK));
-		board.put(Column.B.getIndex(8), new Piece(8, Column.B, Color.BLACK, pieceType.KNIGHT));
-		board.put(Column.G.getIndex(8), new Piece(8, Column.G, Color.BLACK, pieceType.KNIGHT));
-		board.put(Column.C.getIndex(8), new Piece(8, Column.C, Color.BLACK, pieceType.BISHOP));
-		board.put(Column.F.getIndex(8), new Piece(8, Column.F, Color.BLACK, pieceType.BISHOP));
-		board.put(Column.D.getIndex(8), new Piece(8, Column.D, Color.BLACK, pieceType.QUEEN));
-		board.put(Column.E.getIndex(8), new Piece(8, Column.E, Color.BLACK, pieceType.KING));
+		board.put(Column.A.getIndex(8), new Piece(new Location(Column.A, 8), Color.BLACK, pieceType.ROOK));
+		board.put(Column.H.getIndex(8), new Piece(new Location(Column.H, 8), Color.BLACK, pieceType.ROOK));
+		board.put(Column.B.getIndex(8), new Piece(new Location(Column.B, 8), Color.BLACK, pieceType.KNIGHT));
+		board.put(Column.G.getIndex(8), new Piece(new Location(Column.G, 8), Color.BLACK, pieceType.KNIGHT));
+		board.put(Column.C.getIndex(8), new Piece(new Location(Column.C, 8), Color.BLACK, pieceType.BISHOP));
+		board.put(Column.F.getIndex(8), new Piece(new Location(Column.F, 8), Color.BLACK, pieceType.BISHOP));
+		board.put(Column.D.getIndex(8), new Piece(new Location(Column.D, 8), Color.BLACK, pieceType.QUEEN));
+		board.put(Column.E.getIndex(8), new Piece(new Location(Column.E, 8), Color.BLACK, pieceType.KING));
 		
 		// real version
 //		for (Column col : Column.values()) 
@@ -54,25 +54,25 @@ public class Board {
 		// test version with no pawns
 		for (Column col : Column.values()) 
 		{
-			board.put(col.getIndex(7), new Piece(7, col, Color.BLUE, pieceType.EMPTY));
-			board.put(col.getIndex(2), new Piece(2, col, Color.BLUE, pieceType.EMPTY));
+			board.put(col.getIndex(7), new Piece(new Location(col, 7), Color.BLUE, pieceType.EMPTY));
+			board.put(col.getIndex(2), new Piece(new Location(col, 2), Color.BLUE, pieceType.EMPTY));
 		}
 		
-		board.put(Column.A.getIndex(1), new Piece(1, Column.A, Color.WHITE, pieceType.ROOK));
-		board.put(Column.H.getIndex(1), new Piece(1, Column.H, Color.WHITE, pieceType.ROOK));
-		board.put(Column.B.getIndex(1), new Piece(1, Column.B, Color.WHITE, pieceType.KNIGHT));
-		board.put(Column.G.getIndex(1), new Piece(1, Column.G, Color.WHITE, pieceType.KNIGHT));
-		board.put(Column.C.getIndex(1), new Piece(1, Column.C, Color.WHITE, pieceType.BISHOP));
-		board.put(Column.F.getIndex(1), new Piece(1, Column.F, Color.WHITE, pieceType.BISHOP));
-		board.put(Column.D.getIndex(1), new Piece(1, Column.D, Color.WHITE, pieceType.QUEEN));
-		board.put(Column.E.getIndex(1), new Piece(1, Column.E, Color.WHITE, pieceType.KING));
+		board.put(Column.A.getIndex(1), new Piece(new Location(Column.A, 1), Color.WHITE, pieceType.ROOK));
+		board.put(Column.H.getIndex(1), new Piece(new Location(Column.H, 1), Color.WHITE, pieceType.ROOK));
+		board.put(Column.B.getIndex(1), new Piece(new Location(Column.B, 1), Color.WHITE, pieceType.KNIGHT));
+		board.put(Column.G.getIndex(1), new Piece(new Location(Column.G, 1), Color.WHITE, pieceType.KNIGHT));
+		board.put(Column.C.getIndex(1), new Piece(new Location(Column.C, 1), Color.WHITE, pieceType.BISHOP));
+		board.put(Column.F.getIndex(1), new Piece(new Location(Column.F, 1), Color.WHITE, pieceType.BISHOP));
+		board.put(Column.D.getIndex(1), new Piece(new Location(Column.D, 1), Color.WHITE, pieceType.QUEEN));
+		board.put(Column.E.getIndex(1), new Piece(new Location(Column.E, 1), Color.WHITE, pieceType.KING));
 		
 		//add empty's
 		for (Column col : Column.values()) 
 		{
 			for (int i = 3; i < 7; i++) 
 			{
-				board.put(col.getIndex(i), new Piece(i, col, Color.BLUE, pieceType.EMPTY));
+				board.put(col.getIndex(i), new Piece(new Location(col, i), Color.BLUE, pieceType.EMPTY));
 			}
 		}
 		
@@ -102,7 +102,7 @@ public class Board {
     	{
     		createButton(piece);
 		}
-    	createButton(new Piece(1, Column.A, Color.BLUE, null)); //the fuker button (fix issue?)
+    	createButton(new Piece(new Location(Column.A, 1), Color.BLUE, null)); //the fuker button (fix issue?)
 	}
     
     //updateBoard: called when a piece is switched: resets frame and redraws based on the HashMap
@@ -123,7 +123,7 @@ public class Board {
     	}
     	else //not null is one of the pieceType enums
     	{
-    		button = new ButtonExtend (p.col+""+p.row);
+    		button = new ButtonExtend (p.location.col + "" + p.location.row);
     		
     		//add image depending on the enum type
 			String img = null;
@@ -161,7 +161,7 @@ public class Board {
     	button.setPiece(p); //polymorphism of JButton for a button to hold a piece object
     	
     	//setBounds to do: change this so we can fit reset button in frame vvvvv
-		button.setBounds(((this.WIDTH/8)*p.col.getX()), ((this.HEIGHT/8)*(8 - p.row)), this.WIDTH/8, this.HEIGHT/8);
+		button.setBounds(((this.WIDTH/8)*p.location.col.getX()), ((this.HEIGHT/8)*(8 - p.location.row)), this.WIDTH/8, this.HEIGHT/8);
 		
 		button.setOpaque(true);
 		button.setBorderPainted(false);
@@ -182,7 +182,7 @@ public class Board {
 			sb.append("\n");
 			sb.append(board.get(piece.index).colorToString());
 	    	sb.append(" " + board.get(piece.index).type);
-	    	sb.append("("+board.get(piece.index).col + ", " + board.get(piece.index).row + ")");
+	    	sb.append("("+board.get(piece.index).location.col + ", " + board.get(piece.index).location.row + ")");
 	    	sb.append(" i: " + piece.index);
 	    }
 		return sb.toString();
@@ -201,7 +201,7 @@ public class Board {
 				if (isItLegal)
 				{
 					System.out.println("moving to " + destinationPiece.type + "(" + 
-							destinationPiece.col + "" + destinationPiece.row+")");
+							destinationPiece.location.col + "" + destinationPiece.location.row+")");
 					movePiece();
 					if (turn == Color.WHITE)
 					{
@@ -230,7 +230,7 @@ public class Board {
 					return;
 				}
 				System.out.println(board.get(indexOf).colorToString() + ", " + board.get(indexOf).type + " (" + 
-						board.get(indexOf).col +", "+board.get(indexOf).row+")   PossMoves:" + board.get(indexOf).possibleMoves);
+						board.get(indexOf).location.col +", "+board.get(indexOf).location.row+")   PossMoves:" + board.get(indexOf).possibleMoves);
 				movingPiece = board.get(indexOf);
 				isSecond = true;
 				return;

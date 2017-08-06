@@ -4,19 +4,17 @@ import java.util.HashMap;
 
 public class Piece {
 	
-	int row; //row on the board (FORMAL so 8 - 1)
-	Column col; 
+	Location location;
 	Color color;
 	pieceType type;
 	ArrayList <Location> possibleMoves = new ArrayList<>();
 	int index;
 	
-	public Piece(int row, Column col, Color color, pieceType type)
+	public Piece(Location location, Color color, pieceType type)
 	{
 		this.color  = color;
 		this.type = type;
-		this.row = row;
-		this.col = col;
+		this.location = location;
 		this.index = Index();
 	}
 	
@@ -24,7 +22,7 @@ public class Piece {
   	public boolean isLegal(Piece that, HashMap<Integer, Piece> b) {
   		for (int i = 0; i < this.possibleMoves.size(); i++)
   		{
-  			if (this.possibleMoves.get(i).col == that.col && this.possibleMoves.get(i).row == that.row)
+  			if (this.possibleMoves.get(i).col == that.location.col && this.possibleMoves.get(i).row == that.location.row)
   			{
 	  			return true;
   			}
@@ -63,24 +61,24 @@ public class Piece {
 		for (int i = 0; i < 64; i ++)
 		{
 			Piece pDest = brd.get(i);
-			if (pDest.col.getX() == moving.col.getX())
+			if (pDest.location.col.getX() == moving.location.col.getX())
 			{
-				if (pDest.row > moving.row)
+				if (pDest.location.row > moving.location.row)
 				{
 					Up.add(pDest);
 				}
-				else if (pDest.row < moving.row)
+				else if (pDest.location.row < moving.location.row)
 				{
 					Down.add (pDest);
 				}
 			}
-			else if (pDest.row == moving.row)
+			else if (pDest.location.row == moving.location.row)
 			{
-				if (pDest.col.getX() < moving.col.getX())
+				if (pDest.location.col.getX() < moving.location.col.getX())
 				{
 					Left.add(pDest);
 				}
-				else if (pDest.row < moving.row)
+				else if (pDest.location.row < moving.location.row)
 				{
 					Right.add(pDest);
 				}
@@ -96,11 +94,11 @@ public class Piece {
 			Piece p = Up.get(i);
 			if (p.type == pieceType.EMPTY)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 			}
 			else if (p.color != moving.color)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 				break;
 			}
 			else if (p.color == moving.color)
@@ -114,11 +112,11 @@ public class Piece {
 			Piece p = Down.get(i);
 			if (p.type == pieceType.EMPTY)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 			}
 			else if (p.color != moving.color)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 				break;
 			}
 			else if (p.color == moving.color)
@@ -131,11 +129,11 @@ public class Piece {
 			Piece p = Left.get(i);
 			if (p.type == pieceType.EMPTY)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 			}
 			else if (p.color != moving.color)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 				break;
 			}
 			else if (p.color == moving.color)
@@ -148,11 +146,11 @@ public class Piece {
 			Piece p = Right.get(i);
 			if (p.type == pieceType.EMPTY)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 			}
 			else if (p.color != moving.color)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 				break;
 			}
 			else if (p.color == moving.color)
@@ -174,26 +172,26 @@ public class Piece {
 		for (int i = 0; i < 64; i ++)
 		{
 			Piece pDest = brd.get(i);
-			if (pDest.col.getX() - moving.col.getX() != 0 && pDest.row - moving.row != 0)
+			if (pDest.location.col.getX() - moving.location.col.getX() != 0 && pDest.location.row - moving.location.row != 0)
 			{
-				if ((double)(pDest.row - moving.row) / (pDest.col.getX() - moving.col.getX()) == 1)
+				if ((double)(pDest.location.row - moving.location.row) / (pDest.location.col.getX() - moving.location.col.getX()) == 1)
 				{
-					if ((pDest.col.getX() - moving.col.getX() > 0))
+					if ((pDest.location.col.getX() - moving.location.col.getX() > 0))
 					{
 						NE.add(pDest);
 					}
-					else if (pDest.col.getX() - moving.col.getX() < 0)
+					else if (pDest.location.col.getX() - moving.location.col.getX() < 0)
 					{
 						SW.add(pDest);
 					}
 				}
-				if ((double)(pDest.row - moving.row) / (pDest.col.getX() - moving.col.getX()) == -1)
+				if ((double)(pDest.location.row - moving.location.row) / (pDest.location.col.getX() - moving.location.col.getX()) == -1)
 				{
-					if (pDest.col.getX() - moving.col.getX() > 0)
+					if (pDest.location.col.getX() - moving.location.col.getX() > 0)
 					{
 						SE.add(pDest);
 					}
-					else if (pDest.col.getX() - moving.col.getX() < 0)
+					else if (pDest.location.col.getX() - moving.location.col.getX() < 0)
 					{
 						NW.add(pDest);
 					}
@@ -206,19 +204,19 @@ public class Piece {
 		SW = sortDiags (SW);
 //		for (int i = 0; i < NE.size(); i++)
 //		{
-//			System.out.println(NE.get(i).col +""+NE.get(i).row);
+//			System.out.println(NE.get(i).location.col +""+NE.get(i).location.row);
 //		}
 //		for (int i = 0; i < NW.size(); i++)
 //		{
-//			System.out.println(NW.get(i).col +""+NW.get(i).row);
+//			System.out.println(NW.get(i).location.col +""+NW.get(i).location.row);
 //		}
 //		for (int i = 0; i < SE.size(); i++)
 //		{
-//			System.out.println(SE.get(i).col +""+SE.get(i).row);
+//			System.out.println(SE.get(i).location.col +""+SE.get(i).location.row);
 //		}
 //		for (int i = 0; i < SW.size(); i++)
 //		{
-//			System.out.println(SW.get(i).col +""+SW.get(i).row);
+//			System.out.println(SW.get(i).location.col +""+SW.get(i).location.row);
 //		}
 		
 		for (int i = 0; i < NE.size(); i ++)
@@ -226,11 +224,11 @@ public class Piece {
 			Piece p = NE.get(i);
 			if (p.type == pieceType.EMPTY)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 			}
 			else if (p.color != moving.color)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 				break;
 			}
 			else if (p.color == moving.color)
@@ -244,11 +242,11 @@ public class Piece {
 			Piece p = NW.get(i);
 			if (p.type == pieceType.EMPTY)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 			}
 			else if (p.color != moving.color)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 				break;
 			}
 			else if (p.color == moving.color)
@@ -262,11 +260,11 @@ public class Piece {
 			Piece p = SE.get(i);
 			if (p.type == pieceType.EMPTY)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 			}
 			else if (p.color != moving.color)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 				break;
 			}
 			else if (p.color == moving.color)
@@ -279,11 +277,11 @@ public class Piece {
 			Piece p = SW.get(i);
 			if (p.type == pieceType.EMPTY)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 			}
 			else if (p.color != moving.color)
 			{
-				arr.add(new Location (p.col, p.row));
+				arr.add(new Location (p.location.col, p.location.row));
 				break;
 			}
 			else if (p.color == moving.color)
@@ -303,7 +301,7 @@ public class Piece {
   			int min = i;
   			for (int j = i+1; j < a.size(); j++)
   			{
-  				if (a.get(min).row + a.get(min).col.getX() > a.get(j).row + a.get(j).col.getX())
+  				if (a.get(min).location.row + a.get(min).location.col.getX() > a.get(j).location.row + a.get(j).location.col.getX())
   				{
   					min = j;
   				}
@@ -321,7 +319,7 @@ public class Piece {
   			int min = i;
   			for (int j = i+1; j < a.size(); j++)
   			{
-  				if (a.get(min).row > a.get(j).row)
+  				if (a.get(min).location.row > a.get(j).location.row)
   				{
   					min = j;
   				}
@@ -339,18 +337,18 @@ public class Piece {
   		ArrayList <Location> arr = new ArrayList <>();
   		for (int i = 0; i < brd.size(); i ++)
   		{
-  			if (moving.row + 1 == brd.get(i).row && moving.col == brd.get(i).col)
+  			if (moving.location.row + 1 == brd.get(i).location.row && moving.location.col == brd.get(i).location.col)
   			{
   				if(brd.get(i).color == Color.BLUE)
 				{
-					arr.add(new Location(brd.get(i).col, brd.get(i).row));
+					arr.add(new Location(brd.get(i).location.col, brd.get(i).location.row));
 				}
   			}
-  			if (moving.row + 1 == brd.get(i).row && Math.abs(moving.col.getX() - brd.get(i).col.getX()) == 1)
+  			if (moving.location.row + 1 == brd.get(i).location.row && Math.abs(moving.location.col.getX() - brd.get(i).location.col.getX()) == 1)
   			{
   				if (brd.get(i).color != Color.BLUE)
   				{
-  					arr.add(new Location(brd.get(i).col, brd.get(i).row));
+  					arr.add(new Location(brd.get(i).location.col, brd.get(i).location.row));
   				}
   			}
   		}
@@ -368,12 +366,12 @@ public class Piece {
   		for (int i = 0; i < 64; i++)
   		{
   			Piece dest = brd.get(i);
-	  		if(Math.abs(moving.col.getX() - dest.col.getX()) <= 1 
-	  				&& Math.abs(moving.row - dest.row) <= 1)
+	  		if(Math.abs(moving.location.col.getX() - dest.location.col.getX()) <= 1 
+	  				&& Math.abs(moving.location.row - dest.location.row) <= 1)
 			{
 				if(dest.color != moving.color)
 				{
-					arr.add(new Location(dest.col, dest.row));
+					arr.add(new Location(dest.location.col, dest.location.row));
 				}
 			}
   		}
@@ -387,18 +385,18 @@ public class Piece {
 		for (int i = 0; i < 64; i++)
 		{
 			Piece dest = brd.get(i);
-			if (dest.equalsCoord(movingPiece.col.getX() + 1, movingPiece.row + 2)     	
-				|| dest.equalsCoord(movingPiece.col.getX() + 2, movingPiece.row + 1)					
-				|| dest.equalsCoord(movingPiece.col.getX() + 1, movingPiece.row - 2)	
-				|| dest.equalsCoord(movingPiece.col.getX() + 2, movingPiece.row - 1)	
-				|| dest.equalsCoord(movingPiece.col.getX() - 1, movingPiece.row + 2)	
-				|| dest.equalsCoord(movingPiece.col.getX() - 2, movingPiece.row + 1)	
-				|| dest.equalsCoord(movingPiece.col.getX() - 1, movingPiece.row - 2)	
-				|| dest.equalsCoord(movingPiece.col.getX() - 2, movingPiece.row - 1))	
+			if (dest.equalsCoord(movingPiece.location.col.getX() + 1, movingPiece.location.row + 2)     	
+				|| dest.equalsCoord(movingPiece.location.col.getX() + 2, movingPiece.location.row + 1)					
+				|| dest.equalsCoord(movingPiece.location.col.getX() + 1, movingPiece.location.row - 2)	
+				|| dest.equalsCoord(movingPiece.location.col.getX() + 2, movingPiece.location.row - 1)	
+				|| dest.equalsCoord(movingPiece.location.col.getX() - 1, movingPiece.location.row + 2)	
+				|| dest.equalsCoord(movingPiece.location.col.getX() - 2, movingPiece.location.row + 1)	
+				|| dest.equalsCoord(movingPiece.location.col.getX() - 1, movingPiece.location.row - 2)	
+				|| dest.equalsCoord(movingPiece.location.col.getX() - 2, movingPiece.location.row - 1))	
 			{
 				if (movingPiece.color != dest.color)
 				{
-					arr.add(new Location(dest.col, dest.row));
+					arr.add(new Location(dest.location.col, dest.location.row));
 				}
 			}
 		}
@@ -409,20 +407,19 @@ public class Piece {
 	//board where this piece moves to the destination piece.
 	public HashMap<Integer,Piece> switchPieces(Piece destinationPiece, HashMap<Integer,Piece> brd) 
 	{
-		Location movTemp = new Location (this.col, this.row);
+		Location movTemp = new Location (this.location.col, this.location.row);
 		
-		this.col = destinationPiece.col;
-		this.row = destinationPiece.row;
+		this.location.col = destinationPiece.location.col;
+		this.location.row = destinationPiece.location.row;
 		
-		destinationPiece.col = movTemp.col;
-		destinationPiece.row = movTemp.row;
+		destinationPiece.location.col = movTemp.col;
+		destinationPiece.location.row = movTemp.row;
 		
 		if (destinationPiece.color != Color.BLUE)
 		{
 			System.out.println("REMOVED");
 			brd.remove(destinationPiece.index);
-			brd.put(destinationPiece.index, new Piece (destinationPiece.row, 
-					destinationPiece.col, Color.BLUE, pieceType.EMPTY));
+			brd.put(destinationPiece.index, new Piece (destinationPiece.location, Color.BLUE, pieceType.EMPTY));
 		}
 		return brd;
 	}
@@ -430,7 +427,7 @@ public class Piece {
 	//returns the index of this piece
 	private int Index() 
 	{
-		return this.col.getIndex(row);
+		return this.location.col.getIndex(this.location.row);
 	}
 	
 	// prints out the index in array (which is converted to an 
@@ -459,13 +456,13 @@ public class Piece {
 	//POLYMORPH returns true if this and comparable have equal x and y's
 	public boolean equalsCoord(Piece comparable)
 	{
-		return (this.col.getX() == comparable.col.getX() && this.row == comparable.row);
+		return (this.location.col.getX() == comparable.location.col.getX() && this.location.row == comparable.location.row);
 	}
 	
 	//POLYMORPH returns true if this has the same x as i and the same y as j
 	public boolean equalsCoord(int a, int n) 
 	{
-		return this.col.getX() == a && this.row == n;
+		return this.location.col.getX() == a && this.location.row == n;
 	}
 	
 	//OVERRIDE the equals method so we can compare temporary objects to the original object in the array
@@ -474,8 +471,8 @@ public class Piece {
 		return (this.color == comparable.color &&
 				this.index == comparable.index &&
 				this.type == comparable.type &&
-				this.col.getX() == comparable.col.getX() &&
-				this.row == comparable.row);
+				this.location.col.getX() == comparable.location.col.getX() &&
+				this.location.row == comparable.location.row);
 	}
 	
 }
