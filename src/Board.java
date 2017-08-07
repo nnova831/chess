@@ -46,18 +46,18 @@ public class Board {
 		board.put(Column.E.getIndex(8), new Piece(new Location(Column.E, 8), Color.BLACK, pieceType.KING));
 		
 		// real version
-//		for (Column col : Column.values()) 
-//		{
-//			board.put(col.getIndex(7), new Piece(7, col, Color.BLACK, pieceType.PAWN));
-//			board.put(col.getIndex(2), new Piece(2, col, Color.WHITE, pieceType.PAWN));
-//		}
-		
-		// test version with no pawns
 		for (Column col : Column.values()) 
 		{
-			board.put(col.getIndex(7), new Piece(new Location(col, 7), Color.BLUE, pieceType.EMPTY));
-			board.put(col.getIndex(2), new Piece(new Location(col, 2), Color.BLUE, pieceType.EMPTY));
+			board.put(col.getIndex(7), new Piece(new Location (col, 7), Color.BLACK, pieceType.PAWN));
+			board.put(col.getIndex(2), new Piece(new Location (col, 2), Color.WHITE, pieceType.PAWN));
 		}
+		
+		// test version with no pawns
+//		for (Column col : Column.values()) 
+//		{
+//			board.put(col.getIndex(7), new Piece(new Location(col, 7), Color.BLUE, pieceType.EMPTY));
+//			board.put(col.getIndex(2), new Piece(new Location(col, 2), Color.BLUE, pieceType.EMPTY));
+//		}
 		
 		board.put(Column.A.getIndex(1), new Piece(new Location(Column.A, 1), Color.WHITE, pieceType.ROOK));
 		board.put(Column.H.getIndex(1), new Piece(new Location(Column.H, 1), Color.WHITE, pieceType.ROOK));

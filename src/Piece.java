@@ -43,8 +43,8 @@ public class Piece {
 				return setBishopArray (this, brd);
 			case PAWN:
 				return setPawnArray (this, brd);
-			default:
-				break;
+			case QUEEN:
+				return setQueenArray (this, brd);
 			}    
 		return null;
 	}
@@ -335,10 +335,20 @@ public class Piece {
 	private ArrayList <Location> setPawnArray (Piece moving, HashMap <Integer, Piece> brd)
   	{
   		ArrayList <Location> arr = new ArrayList <>();
-  		for (int i = 0; i < brd.size(); i ++)
-  		{
-  			if (moving.location.row + 1 == brd.get(i).location.row && moving.location.col == brd.get(i).location.col)
-  			{
+  		int a = 1;
+		int b = 0;
+		if (moving.location.row == 2 || moving.location.row == 7)
+		{
+			b = 1;
+		}
+		if (moving.color == Color.BLACK)
+		{
+			a *= -1;
+		}
+		for (int i = 0; i < brd.size(); i ++)
+		{
+			if (Math.abs(moving.location.row + a - brd.get(i).location.row) <= b && moving.location.col == brd.get(i).location.col)
+			{
   				if(brd.get(i).color == Color.BLUE)
 				{
 					arr.add(new Location(brd.get(i).location.col, brd.get(i).location.row));
@@ -346,7 +356,7 @@ public class Piece {
   			}
   			if (moving.location.row + 1 == brd.get(i).location.row && Math.abs(moving.location.col.getX() - brd.get(i).location.col.getX()) == 1)
   			{
-  				if (brd.get(i).color != Color.BLUE)
+  				if (moving.color != brd.get (i).color && brd.get(i).color != Color.BLUE)
   				{
   					arr.add(new Location(brd.get(i).location.col, brd.get(i).location.row));
   				}
