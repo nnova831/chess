@@ -363,6 +363,7 @@ public class Piece {
   		ArrayList <Piece> E = new ArrayList <>();
 		ArrayList <Piece> W = new ArrayList <>();
 		ArrayList <Piece> S = new ArrayList <>();
+  		ArrayList <Piece> NE = new ArrayList <>();
 		ArrayList <Piece> NW = new ArrayList <>();
 		ArrayList <Piece> SE = new ArrayList <>();
 		ArrayList <Piece> SW = new ArrayList <>();
