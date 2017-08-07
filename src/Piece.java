@@ -355,10 +355,222 @@ public class Piece {
   		return arr;
   	}
   	
-  	private ArrayList <Location> setQueenArray (Piece moving, HashMap <Integer, Piece> brd)
-  	{
-  		return null;
-  	}
+	private ArrayList <Location> setQueenArray (Piece moving, HashMap <Integer, Piece> brd)
+	{
+  		ArrayList <Location> arr = new ArrayList <>();
+		
+  		ArrayList <Piece> N = new ArrayList <>();
+  		ArrayList <Piece> E = new ArrayList <>();
+		ArrayList <Piece> W = new ArrayList <>();
+		ArrayList <Piece> S = new ArrayList <>();
+		ArrayList <Piece> NW = new ArrayList <>();
+		ArrayList <Piece> SE = new ArrayList <>();
+		ArrayList <Piece> SW = new ArrayList <>();
+		
+		for (int i = 0; i < 64; i ++)
+		{
+			Piece pDest = brd.get(i);
+			if (pDest.location.col.getX() - moving.location.col.getX() != 0 && pDest.location.row - moving.location.row != 0)
+			{
+				if ((double)(pDest.location.row - moving.location.row) / (pDest.location.col.getX() - moving.location.col.getX()) == 1)
+				{
+					if ((pDest.location.col.getX() - moving.location.col.getX() > 0))
+					{
+						NE.add(pDest);
+					}
+					else if (pDest.location.col.getX() - moving.location.col.getX() < 0)
+					{
+						SW.add(pDest);
+					}
+				}
+				if ((double)(pDest.location.row - moving.location.row) / (pDest.location.col.getX() - moving.location.col.getX()) == -1)
+				{
+					if (pDest.location.col.getX() - moving.location.col.getX() > 0)
+					{
+						SE.add(pDest);
+					}
+					else if (pDest.location.col.getX() - moving.location.col.getX() < 0)
+					{
+						NW.add(pDest);
+					}
+				}
+			}
+			if (pDest.location.col.getX() == moving.location.col.getX())
+			{
+				if (pDest.location.row > moving.location.row)
+				{
+					N.add(pDest);
+				}
+				else if (pDest.location.row < moving.location.row)
+				{
+					S.add (pDest);
+				}
+			}
+			else if (pDest.location.row == moving.location.row)
+			{
+				if (pDest.location.col.getX() < moving.location.col.getX())
+				{
+					W.add(pDest);
+				}
+				else if (pDest.location.row < moving.location.row)
+				{
+					E.add(pDest);
+				}
+			}
+		}
+		
+		NE = sortDiags (NE);
+		NW = sortDiags (NW);
+		SE = sortDiags (SE);
+		SW = sortDiags (SW);
+		N = sortStraights (N);
+		W = sortStraights (W);
+		E = sortStraights (E);
+		S = sortStraights (S);
+		
+		// Go through each sorted array and run through until  you hit a piece,
+		// and include all the pieces before that to the array
+		for (int i = 0; i < NE.size(); i ++)
+		{
+			Piece p = NE.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}
+	
+		for (int i = 0; i < NW.size(); i ++)
+		{
+			Piece p = NW.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}	
+		for (int i = SE.size() - 1; i >= 0; i --)
+		{
+			Piece p = SE.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}
+		for (int i = SW.size() - 1; i >= 0; i --)
+		{
+			Piece p = SW.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}
+		for (int i = 0; i < N.size(); i ++)
+		{
+			Piece p = N.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}
+		
+		for (int i = S.size() - 1; i >= 0; i --)
+		{
+			Piece p = S.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}
+		for (int i = W.size() - 1; i >= 0; i --)
+		{
+			Piece p = W.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}
+		for (int i = 0; i < E.size(); i ++)
+		{
+			Piece p = E.get(i);
+			if (p.type == pieceType.EMPTY)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+			}
+			else if (p.color != moving.color)
+			{
+				arr.add(new Location (p.location.col, p.location.row));
+				break;
+			}
+			else if (p.color == moving.color)
+			{
+				break;
+			}
+		}	
+		
+		return arr;
+	}
   	
   	private ArrayList <Location> setKingArray (Piece moving, HashMap<Integer, Piece> brd)
   	{
