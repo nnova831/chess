@@ -99,11 +99,21 @@ public class Board {
     private void drawBoard() 
     {
     	frame.repaint();
-    	for (Piece piece: board.values())
+    	int n = 0;
+    	for (int i = 0; i < board.size(); i ++)
     	{
-    		createButton(piece);
-		}
-    	createButton(new Piece(new Location(Column.A, 1), Color.BLUE, null)); //the fuker button (fix issue?)
+    		Color c = Color.WHITE;
+    		if (i % 8 == 0)
+    		{
+    			n ++;
+    		}
+    		if ((board.get(i).location.col.getX() + n) % 2 == 0)
+    		{
+    			c = new Color (172, 112, 61);
+    		}
+    		createButton(board.get(i), c);
+    	}
+    	createButton(new Piece(new Location(Column.A, 1), Color.BLUE, null), Color.WHITE); //the fuker button (fix issue?)
 	}
     
     //updateBoard: called when a piece is switched: resets frame and redraws based on the HashMap
@@ -114,9 +124,9 @@ public class Board {
 	}
 	
     //createButton: takes piece and draws it on the board
-    private void createButton (Piece p) {
+    private void createButton (Piece p, Color color) {
     	ButtonExtend button;
-    	if(p.type == null) //if a piece's type is null, than its a fuker button (fix issue at some point?)
+    	if(p.type == null) //if a piece's type is null, than its a fuker button (fix issue at some point?) "fuk the fuker button" - abraham lincoln
     	{
     		button = new ButtonExtend();
     		frame.add(button);
@@ -125,7 +135,6 @@ public class Board {
     	else //not null is one of the pieceType enums
     	{
     		button = new ButtonExtend (p.location.col + "" + p.location.row);
-    		
     		//add image depending on the enum type
 			String img = null;
 			switch (p.type)
@@ -168,25 +177,10 @@ public class Board {
 		button.setBorderPainted(false);
 		button.addActionListener(new EndingListener ()); 
 		button.setActionCommand(p.toStringIndex()); //adds logic from actionListener's code
-		button.setBackground(Color.WHITE);
+		button.setBackground(color);
 		button.setBorder(new LineBorder (Color.BLACK, 1));
 		button.setBorderPainted(true);
 		frame.add(button);
-	}
-    
-    //toStringArray: prints out each piece in the current board
-    public String toStringArray()
-	{	
-		StringBuilder sb = new StringBuilder ();
-		for (Piece piece: board.values())
-	    {
-			sb.append("\n");
-			sb.append(board.get(piece.index).colorToString());
-	    	sb.append(" " + board.get(piece.index).type);
-	    	sb.append("("+board.get(piece.index).location.col + ", " + board.get(piece.index).location.row + ")");
-	    	sb.append(" i: " + piece.index);
-	    }
-		return sb.toString();
 	}
     
     private void buttonPressedLogic(int indexOf) //logic that runs when a piece or space on the board is clicked.
@@ -234,11 +228,16 @@ public class Board {
 						board.get(indexOf).location.col +", "+board.get(indexOf).location.row+")   PossMoves:" + board.get(indexOf).possibleMoves);
 				movingPiece = board.get(indexOf);
 				isSecond = true;
+			// Attempt at shading in all possible moves after first click
+				createButton (new Piece (board.get(indexOf).possibleMoves.get(0), board.get(indexOf).color, board.get(indexOf).type) , Color.GREEN);
+//				for (int i = 0; i < board.get(indexOf).possibleMoves.size(); i++)
+//				{
+//					createButton (new Piece (board.get(indexOf).possibleMoves.get(i), board.get(indexOf).color, board.get(indexOf).type) , Color.GREEN);
+//				}
 				return;
 			}
 			else
 			{
-				isSecond = false;
 				System.out.println("was empty.");
 				return;
 			}
@@ -253,6 +252,21 @@ public class Board {
 		updateBoard();
 		updatePossibleMoves();
 		frame.setVisible(true);
+	}
+
+	//toStringArray: prints out each piece in the current board
+	public String toStringArray()
+	{	
+		StringBuilder sb = new StringBuilder ();
+		for (Piece piece: board.values())
+	    {
+			sb.append("\n");
+			sb.append(board.get(piece.index).colorToString());
+	    	sb.append(" " + board.get(piece.index).type);
+	    	sb.append("("+board.get(piece.index).location.col + ", " + board.get(piece.index).location.row + ")");
+	    	sb.append(" i: " + piece.index);
+	    }
+		return sb.toString();
 	}
 
 	private class EndingListener implements ActionListener

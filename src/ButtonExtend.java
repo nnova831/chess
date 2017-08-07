@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+@SuppressWarnings("serial")
 public class ButtonExtend extends JButton{
 	
 	private Piece piece;
@@ -37,7 +38,6 @@ public class ButtonExtend extends JButton{
 		{
 		    System.out.println(ex);
 		}
-		
 	}
-
+	
 }
