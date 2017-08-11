@@ -71,7 +71,7 @@ public class Piece {
 					arr.add(new Location(brd.get(i).location.col, brd.get(i).location.row));
 				}
 			}
-			if (moving.location.row + 1 == brd.get(i).location.row && Math.abs(moving.location.col.getX() - brd.get(i).location.col.getX()) == 1)
+			if (moving.location.row + a == brd.get(i).location.row && Math.abs(moving.location.col.getX() - brd.get(i).location.col.getX()) == 1)
 			{
 				if (moving.color != brd.get (i).color && brd.get(i).color != Color.BLUE)
 				{

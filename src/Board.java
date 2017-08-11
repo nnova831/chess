@@ -35,7 +35,6 @@ public class Board {
 	//setDefaultBoard: takes arraylist of the board and clears it, then add's the default start to the game
 	private void setDefaultBoard(){
 		board = new HashMap<>();
-		
 		board.put(Column.A.getIndex(8), new Piece(new Location(Column.A, 8), Color.BLACK, pieceType.ROOK));
 		board.put(Column.H.getIndex(8), new Piece(new Location(Column.H, 8), Color.BLACK, pieceType.ROOK));
 		board.put(Column.B.getIndex(8), new Piece(new Location(Column.B, 8), Color.BLACK, pieceType.KNIGHT));
@@ -99,15 +98,10 @@ public class Board {
     private void drawBoard() 
     {
     	frame.repaint();
-    	int n = 0;
     	for (int i = 0; i < board.size(); i ++)
     	{
     		Color c = Color.WHITE;
-    		if (i % 8 == 0)
-    		{
-    			n ++;
-    		}
-    		if ((board.get(i).location.col.getX() + n) % 2 == 0)
+    		if ((board.get(i).location.col.getX() + board.get(i).location.row) % 2 == 0)
     		{
     			c = new Color (172, 112, 61);
     		}
@@ -192,6 +186,7 @@ public class Board {
 				destinationPiece = board.get(indexOf);
 				isSecond = false;
 				boolean isItLegal = movingPiece.isLegal(destinationPiece, board);
+				System.out.println(movingPiece.location.row + " " + destinationPiece.location.row);
 				System.out.println("result: " + isItLegal + "\n");
 				if (isItLegal)
 				{
@@ -229,7 +224,7 @@ public class Board {
 				movingPiece = board.get(indexOf);
 				isSecond = true;
 			// Attempt at shading in all possible moves after first click
-				createButton (new Piece (board.get(indexOf).possibleMoves.get(0), board.get(indexOf).color, board.get(indexOf).type) , Color.GREEN);
+//				createButton (new Piece (board.get(indexOf).possibleMoves.get(0), board.get(indexOf).color, board.get(indexOf).type) , Color.GREEN);
 //				for (int i = 0; i < board.get(indexOf).possibleMoves.size(); i++)
 //				{
 //					createButton (new Piece (board.get(indexOf).possibleMoves.get(i), board.get(indexOf).color, board.get(indexOf).type) , Color.GREEN);
