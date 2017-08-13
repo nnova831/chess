@@ -186,7 +186,6 @@ public class Board {
 				destinationPiece = board.get(indexOf);
 				isSecond = false;
 				boolean isItLegal = movingPiece.isLegal(destinationPiece, board);
-				System.out.println(movingPiece.location.row + " " + destinationPiece.location.row);
 				System.out.println("result: " + isItLegal + "\n");
 				if (isItLegal)
 				{
@@ -265,16 +264,12 @@ public class Board {
 	}
 
 	private class EndingListener implements ActionListener
-    { 
-		
+    {
     	public void actionPerformed(ActionEvent e) 
 		{			
     		buttonPressedLogic(Integer.parseInt(e.getActionCommand()));
-		}
-    	
-    	
+		}	
     }
-	
 }
 
 
