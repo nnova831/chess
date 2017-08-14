@@ -134,27 +134,51 @@ public class Board {
 			switch (p.type)
 			{
 			case PAWN:
-				img = "pawn.png";
+				if(p.colorToString() == "WHITE"){
+					img = "White Pawn.png";
+				}else{
+					img = "Black Pawn.png";
+				}
 				button.addImage (img);
 				break;
 			case KNIGHT:
-				img = "knight.jpg";
+				if(p.colorToString() == "WHITE"){
+					img = "White Knight.png";
+				}else{
+					img = "Black Knight.png";
+				}
 				button.addImage (img);
 				break;
 			case BISHOP:
-				img = "bishop.png";
+				if(p.colorToString() == "WHITE"){
+					img = "White Bishop.png";
+				}else{
+					img = "Black Bishop.png";
+				}
 				button.addImage (img);
 				break;
 			case ROOK:
-				img = "rook.png";
+				if(p.colorToString() == "WHITE"){
+					img = "White Rook.png";
+				}else{
+					img = "Black Rook.png";
+				}
 				button.addImage (img);
 				break;
 			case QUEEN:
-				img = "queen.png";
+				if(p.colorToString() == "WHITE"){
+					img = "White Queen.png";
+				}else{
+					img = "Black Queen.png";
+				}
 				button.addImage (img);
 				break;
 			case KING:
-				img = "king.png";
+				if(p.colorToString() == "WHITE"){
+					img = "White King.png";
+				}else{
+					img = "Black King.png";
+				}
 				button.addImage (img);
 				break;
 			default:
