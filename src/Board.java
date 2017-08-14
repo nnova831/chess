@@ -111,7 +111,7 @@ public class Board {
 	}
     
     //updateBoard: called when a piece is switched: resets frame and redraws based on the HashMap
-	private void updateBoard() 
+	private void updateBoardVisual() 
 	{
 		frame.getContentPane().removeAll();
 		drawBoard();
@@ -179,7 +179,36 @@ public class Board {
     
     private void buttonPressedLogic(int indexOf) //logic that runs when a piece or space on the board is clicked.
     {
-    	if(isSecond == true)
+		if (isSecond == false) // first click
+		{			
+			if(board.get(indexOf).type != pieceType.EMPTY)
+			{
+				if (board.get(indexOf).color != turn)
+				{
+					System.out.println("That is Not Your Piece");
+					return;
+				}
+				movingPiece = board.get(indexOf); 
+				movingPiece.possibleMoves = movingPiece.setPossibleMovesArray(board);
+				System.out.println(board.get(indexOf).colorToString() + ", " + board.get(indexOf).type + " (" + 
+						board.get(indexOf).location.col +", "+board.get(indexOf).location.row+")   PossMoves:" + board.get(indexOf).possibleMoves);
+				
+				isSecond = true;
+			// Attempt at shading in all possible moves after first click
+//				createButton (new Piece (board.get(indexOf).possibleMoves.get(0), board.get(indexOf).color, board.get(indexOf).type) , Color.GREEN);
+//				for (int i = 0; i < board.get(indexOf).possibleMoves.size(); i++)
+//				{
+//					createButton (new Piece (board.get(indexOf).possibleMoves.get(i), board.get(indexOf).color, board.get(indexOf).type) , Color.GREEN);
+//				}
+				return;
+			}
+			else
+			{
+				System.out.println("was empty.");
+				return;
+			}
+		}
+		else // second click
 		{
 			if(board.get(indexOf).type == pieceType.EMPTY || board.get(indexOf).color != movingPiece.color)
 			{
@@ -209,33 +238,6 @@ public class Board {
 				return;
 			}
 		}
-		else
-		{			
-			if(board.get(indexOf).type != pieceType.EMPTY)
-			{
-				if (board.get(indexOf).color != turn)
-				{
-					System.out.println("That is Not Your Piece");
-					return;
-				}
-				System.out.println(board.get(indexOf).colorToString() + ", " + board.get(indexOf).type + " (" + 
-						board.get(indexOf).location.col +", "+board.get(indexOf).location.row+")   PossMoves:" + board.get(indexOf).possibleMoves);
-				movingPiece = board.get(indexOf);
-				isSecond = true;
-			// Attempt at shading in all possible moves after first click
-//				createButton (new Piece (board.get(indexOf).possibleMoves.get(0), board.get(indexOf).color, board.get(indexOf).type) , Color.GREEN);
-//				for (int i = 0; i < board.get(indexOf).possibleMoves.size(); i++)
-//				{
-//					createButton (new Piece (board.get(indexOf).possibleMoves.get(i), board.get(indexOf).color, board.get(indexOf).type) , Color.GREEN);
-//				}
-				return;
-			}
-			else
-			{
-				System.out.println("was empty.");
-				return;
-			}
-		}
     }
     //movePiece: assumes class variables movingPiece and destinatinoPiece are both occupied
     //			 performs a switch piece move in the board, and updates the JFrame accordingly
@@ -243,8 +245,7 @@ public class Board {
     private void movePiece() 
     {
     	board = movingPiece.switchPieces(destinationPiece, board);
-		updateBoard();
-		updatePossibleMoves();
+		updateBoardVisual();
 		frame.setVisible(true);
 	}
 

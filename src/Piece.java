@@ -49,22 +49,28 @@ public class Piece {
 		return null;
 	}
   	
-  	private ArrayList <Location> setPawnArray (Piece moving, HashMap <Integer, Piece> brd)
+	private ArrayList <Location> setPawnArray (Piece moving, HashMap <Integer, Piece> brd)
 	{
 		ArrayList <Location> arr = new ArrayList <>();
 		int a = 1;
-		int b = 0;
-		if (moving.location.row == 2 || moving.location.row == 7)
-		{
-			b = 1;
-		}
 		if (moving.color == Color.BLACK)
 		{
 			a *= -1;
 		}
+		if (moving.location.row == 2 || moving.location.row == 7)
+		{
+//			if (brd.get(moving.index + 8*a).type == pieceType.EMPTY)
+//			{
+//				System.out.println("EMPTY");
+//			}
+//			else
+//			{
+//				System.out.println("NOT EMPTY");
+//			}
+		}
 		for (int i = 0; i < brd.size(); i ++)
 		{
-			if (Math.abs(moving.location.row + a - brd.get(i).location.row) <= b && moving.location.col == brd.get(i).location.col)
+			if (moving.location.row + a == brd.get(i).location.row && moving.location.col == brd.get(i).location.col)
 			{
 				if(brd.get(i).color == Color.BLUE)
 				{
@@ -82,6 +88,7 @@ public class Piece {
 		return arr;
 	}
 
+
 	private ArrayList <Location> setKnightArray (Piece movingPiece, HashMap <Integer, Piece> brd)
 	{
 		ArrayList <Location> arr = new ArrayList<>();
@@ -90,13 +97,13 @@ public class Piece {
 		{
 			Piece dest = brd.get(i);
 			if (dest.equalsCoord(movingPiece.location.col.getX() + 1, movingPiece.location.row + 2)     	
-				|| dest.equalsCoord(movingPiece.location.col.getX() + 2, movingPiece.location.row + 1)					
-				|| dest.equalsCoord(movingPiece.location.col.getX() + 1, movingPiece.location.row - 2)	
-				|| dest.equalsCoord(movingPiece.location.col.getX() + 2, movingPiece.location.row - 1)	
-				|| dest.equalsCoord(movingPiece.location.col.getX() - 1, movingPiece.location.row + 2)	
-				|| dest.equalsCoord(movingPiece.location.col.getX() - 2, movingPiece.location.row + 1)	
-				|| dest.equalsCoord(movingPiece.location.col.getX() - 1, movingPiece.location.row - 2)	
-				|| dest.equalsCoord(movingPiece.location.col.getX() - 2, movingPiece.location.row - 1))	
+			|| dest.equalsCoord(movingPiece.location.col.getX() + 2, movingPiece.location.row + 1)					
+			|| dest.equalsCoord(movingPiece.location.col.getX() + 1, movingPiece.location.row - 2)	
+			|| dest.equalsCoord(movingPiece.location.col.getX() + 2, movingPiece.location.row - 1)	
+			|| dest.equalsCoord(movingPiece.location.col.getX() - 1, movingPiece.location.row + 2)	
+			|| dest.equalsCoord(movingPiece.location.col.getX() - 2, movingPiece.location.row + 1)	
+			|| dest.equalsCoord(movingPiece.location.col.getX() - 1, movingPiece.location.row - 2)	
+			|| dest.equalsCoord(movingPiece.location.col.getX() - 2, movingPiece.location.row - 1))	
 			{
 				if (movingPiece.color != dest.color)
 				{

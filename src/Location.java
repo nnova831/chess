@@ -12,34 +12,34 @@ public class Location {
 	public Location (int cN, int r)
 	{
 		row = r;
-		switch (cN) {
+		col = initColumn (cN);
+	}
+	
+	// create second constructor for a specific case regarding en passant
+	// if when a new location is creating using this constructor, it means that the potential location
+	// in the array is 2 ahead of the pawn, meaning a special case must be called
+	
+	private Column initColumn (int columnNumber) // efficiency
+	{
+		switch (columnNumber) {
 		case 0:
-			col = Column.A;
-			break;
+			return Column.A;
 		case 1:
-			col = Column.B;
-			break;
+			return Column.B;
 		case 2:
-			col = Column.C;
-			break;
+			return Column.C;
 		case 3:
-			col = Column.D;
-			break;
+			return Column.D;
 		case 4:
-			col = Column.E;
-			break;
+			return Column.E;
 		case 5:
-			col = Column.F;
-			break;
+			return Column.F;
 		case 6:
-			col = Column.G;
-			break;
+			return Column.G;
 		case 7:
-			col = Column.H;
-			break;
-		default:
-			break;
+			return Column.H;
 		}
+		return null;
 	}
 	
 	public boolean equals (Location that)
