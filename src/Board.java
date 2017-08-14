@@ -239,6 +239,7 @@ public class Board {
 				destinationPiece = board.get(indexOf);
 				isSecond = false;
 				boolean isItLegal = movingPiece.isLegal(destinationPiece, board);
+				System.out.println(movingPiece.possibleMoves);
 				System.out.println("result: " + isItLegal + "\n");
 				if (isItLegal)
 				{

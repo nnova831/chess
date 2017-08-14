@@ -19,10 +19,10 @@ public class Piece {
 	}
 	
 	//isLegal: takes a piece of destination and determines if this piece is allowed to make that move
-  	public boolean isLegal(Piece that, HashMap<Integer, Piece> b) {
+  	public boolean isLegal(Piece dest, HashMap<Integer, Piece> b) {
   		for (int i = 0; i < this.possibleMoves.size(); i++)
   		{
-  			if (this.possibleMoves.get(i).col == that.location.col && this.possibleMoves.get(i).row == that.location.row)
+  			if (this.possibleMoves.get(i).col == dest.location.col && this.possibleMoves.get(i).row == dest.location.row)
   			{
 	  			return true;
   			}
