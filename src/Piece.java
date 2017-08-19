@@ -59,16 +59,27 @@ public class Piece {
 		{
 			a *= -1;
 		}
+		// pawn double move
+		// (have to check the 2 locations in front and make sure they are empty
 		if (moving.location.row == 2 || moving.location.row == 7)
 		{
-//			if (brd.get(moving.index + 8*a).type == pieceType.EMPTY)
-//			{
-//				System.out.println("EMPTY");
-//			}
-//			else
-//			{
-//				System.out.println("NOT EMPTY");
-//			}
+			Piece p1 = null;
+			Piece p2 = null;
+			for (int i = 0; i < brd.size(); i++)
+			{
+				if (brd.get(i).location.col == moving.location.col && brd.get(i).location.row - moving.location.row == 1*a)
+				{
+					p1 = brd.get(i);
+				}
+				if (brd.get(i).location.col == moving.location.col && brd.get(i).location.row - moving.location.row == 2*a)
+				{
+					p2 = brd.get(i);
+				}
+			}
+			if (p1!= null && p2!=null && p1.type == pieceType.EMPTY && p2.type == pieceType.EMPTY)
+			{
+				arr.add (new Location (p2.location.col, p2.location.row));
+			}
 		}
 		for (int i = 0; i < brd.size(); i ++)
 		{
