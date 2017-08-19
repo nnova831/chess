@@ -7,6 +7,7 @@ public class Piece {
 	Location location;
 	Color color;
 	pieceType type;
+	boolean isPossible;
 	ArrayList <Location> possibleMoves = new ArrayList<>();
 	int index;
 	
@@ -16,6 +17,7 @@ public class Piece {
 		this.type = type;
 		this.location = location;
 		this.index = Index();
+		this.isPossible = false;
 	}
 	
 	//isLegal: takes a piece of destination and determines if this piece is allowed to make that move

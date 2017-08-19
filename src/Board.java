@@ -1,17 +1,16 @@
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
-
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 public class Board {
 	
 	private static HashMap<Integer, Piece> board;
-	private int WIDTH = 850;
-	private int HEIGHT = 850;
+	private int WIDTH = 900;
+	private int HEIGHT = 900;
 	private int OFFSETHEIGHT = 25;
 	private JFrame frame;
 	private Piece movingPiece;
@@ -117,23 +116,40 @@ public class Board {
 		drawBoard();
 	}
 	
+	private void drawPossibleMoves(ArrayList<Location> possibleMoves)
+	{
+		for (Location loc : possibleMoves) {
+			board.get(loc.col.getIndex(loc.row)).isPossible = true;
+		}
+		updateBoardVisual();
+	}
+	
+	private void clearMovesVisual()
+	{
+		for (Piece p : board.values()) {
+			p.isPossible = false;
+		}
+		updateBoardVisual();
+	}
+	
     //createButton: takes piece and draws it on the board
+	//fuker button (fix issue at some point?) "fuk the fuker button" - abraham lincoln
+	//if this button fucker makes it to final release, it will become the fukee button  	
     private void createButton (Piece p, Color color) {
     	ButtonExtend button;
-    	if(p.type == null) //if a piece's type is null, than its a fuker button (fix issue at some point?) "fuk the fuker button" - abraham lincoln
+    	String img = null;
+    	if(p.type == null)//null case, couldn't be handled by default in a switch
     	{
     		button = new ButtonExtend();
     		frame.add(button);
     		return;
     	}
-    	else //not null is one of the pieceType enums
+    	else
     	{
-    		button = new ButtonExtend (p.location.col + "" + p.location.row);
-    		//add image depending on the enum type
-			String img = null;
 			switch (p.type)
 			{
 			case PAWN:
+				button = new ButtonExtend();
 				if(p.colorToString() == "WHITE"){
 					img = "White Pawn.png";
 				}else{
@@ -142,6 +158,7 @@ public class Board {
 				button.addImage (img);
 				break;
 			case KNIGHT:
+				button = new ButtonExtend();
 				if(p.colorToString() == "WHITE"){
 					img = "White Knight.png";
 				}else{
@@ -150,6 +167,7 @@ public class Board {
 				button.addImage (img);
 				break;
 			case BISHOP:
+				button = new ButtonExtend();
 				if(p.colorToString() == "WHITE"){
 					img = "White Bishop.png";
 				}else{
@@ -158,6 +176,7 @@ public class Board {
 				button.addImage (img);
 				break;
 			case ROOK:
+				button = new ButtonExtend();
 				if(p.colorToString() == "WHITE"){
 					img = "White Rook.png";
 				}else{
@@ -166,6 +185,7 @@ public class Board {
 				button.addImage (img);
 				break;
 			case QUEEN:
+				button = new ButtonExtend();
 				if(p.colorToString() == "WHITE"){
 					img = "White Queen.png";
 				}else{
@@ -174,15 +194,21 @@ public class Board {
 				button.addImage (img);
 				break;
 			case KING:
+				button = new ButtonExtend();
 				if(p.colorToString() == "WHITE"){
 					img = "White King.png";
 				}else{
 					img = "Black King.png";
 				}
-				button.addImage (img);
+				button.addImage(img);
 				break;
-			default:
+			case EMPTY: 
+				button = new ButtonExtend(p.location.col + "" + p.location.row);
 				break;
+			default: //case null
+				System.out.println("Should never get here"); //because we handle every situation already
+				button = new ButtonExtend();
+	    		break;
 			}
     	}
     	
@@ -195,7 +221,13 @@ public class Board {
 		button.setBorderPainted(false);
 		button.addActionListener(new EndingListener ()); 
 		button.setActionCommand(p.toStringIndex()); //adds logic from actionListener's code
-		button.setBackground(color);
+		if(p.isPossible == true)
+		{
+			button.setBackground(Color.GRAY);
+		}else
+		{
+			button.setBackground(color);
+		}
 		button.setBorder(new LineBorder (Color.BLACK, 1));
 		button.setBorderPainted(true);
 		frame.add(button);
@@ -214,6 +246,7 @@ public class Board {
 				}
 				movingPiece = board.get(indexOf); 
 				movingPiece.possibleMoves = movingPiece.setPossibleMovesArray(board);
+				drawPossibleMoves(movingPiece.possibleMoves);
 				System.out.println(board.get(indexOf).colorToString() + ", " + board.get(indexOf).type + " (" + 
 						board.get(indexOf).location.col +", "+board.get(indexOf).location.row+")   PossMoves:" + board.get(indexOf).possibleMoves);
 				
@@ -246,6 +279,7 @@ public class Board {
 					System.out.println("moving to " + destinationPiece.type + "(" + 
 							destinationPiece.location.col + "" + destinationPiece.location.row+")");
 					movePiece();
+					clearMovesVisual();
 					if (turn == Color.WHITE)
 					{
 						turn = Color.BLACK;
