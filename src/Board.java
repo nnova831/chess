@@ -1,4 +1,7 @@
 import java.awt.Color;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -16,7 +19,7 @@ public class Board {
 	private Piece movingPiece;
 	private Piece destinationPiece;
 	private boolean isSecond = false;
-	Color turn = Color.WHITE;
+	Color turn;
 	
 	public static void main(String[] args) {		
 		Board b = new Board();
@@ -29,25 +32,34 @@ public class Board {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		movingPiece = null;
 		destinationPiece = null;
+		MenuBar menuBar = new MenuBar ();
+			Menu file = new Menu ("file");
+				MenuItem newGame = new MenuItem ("new game");
+				newGame.addActionListener(new EndingListener ()); 
+		file.add(newGame);
+		menuBar.add(file);
+		frame.setMenuBar(menuBar);
 	}
 			
 	//setDefaultBoard: takes arraylist of the board and clears it, then add's the default start to the game
 	private void setDefaultBoard(){
 		board = new HashMap<>();
-		board.put(Column.A.getIndex(8), new Piece(new Location(Column.A, 8), Color.BLACK, pieceType.ROOK));
-		board.put(Column.H.getIndex(8), new Piece(new Location(Column.H, 8), Color.BLACK, pieceType.ROOK));
-		board.put(Column.B.getIndex(8), new Piece(new Location(Column.B, 8), Color.BLACK, pieceType.KNIGHT));
-		board.put(Column.G.getIndex(8), new Piece(new Location(Column.G, 8), Color.BLACK, pieceType.KNIGHT));
-		board.put(Column.C.getIndex(8), new Piece(new Location(Column.C, 8), Color.BLACK, pieceType.BISHOP));
-		board.put(Column.F.getIndex(8), new Piece(new Location(Column.F, 8), Color.BLACK, pieceType.BISHOP));
-		board.put(Column.D.getIndex(8), new Piece(new Location(Column.D, 8), Color.BLACK, pieceType.QUEEN));
-		board.put(Column.E.getIndex(8), new Piece(new Location(Column.E, 8), Color.BLACK, pieceType.KING));
+		turn = Color.WHITE;
+				
+		board.put(Column.A.getOrigIndex(8), new Piece(new Location(Column.A, 8), Color.BLACK, pieceType.ROOK));
+		board.put(Column.H.getOrigIndex(8), new Piece(new Location(Column.H, 8), Color.BLACK, pieceType.ROOK));
+		board.put(Column.B.getOrigIndex(8), new Piece(new Location(Column.B, 8), Color.BLACK, pieceType.KNIGHT));
+		board.put(Column.G.getOrigIndex(8), new Piece(new Location(Column.G, 8), Color.BLACK, pieceType.KNIGHT));
+		board.put(Column.C.getOrigIndex(8), new Piece(new Location(Column.C, 8), Color.BLACK, pieceType.BISHOP));
+		board.put(Column.F.getOrigIndex(8), new Piece(new Location(Column.F, 8), Color.BLACK, pieceType.BISHOP));
+		board.put(Column.D.getOrigIndex(8), new Piece(new Location(Column.D, 8), Color.BLACK, pieceType.QUEEN));
+		board.put(Column.E.getOrigIndex(8), new Piece(new Location(Column.E, 8), Color.BLACK, pieceType.KING));
 		
 		// real version
 		for (Column col : Column.values()) 
 		{
-			board.put(col.getIndex(7), new Piece(new Location (col, 7), Color.BLACK, pieceType.PAWN));
-			board.put(col.getIndex(2), new Piece(new Location (col, 2), Color.WHITE, pieceType.PAWN));
+			board.put(col.getOrigIndex(7), new Piece(new Location (col, 7), Color.BLACK, pieceType.PAWN));
+			board.put(col.getOrigIndex(2), new Piece(new Location (col, 2), Color.WHITE, pieceType.PAWN));
 		}
 		
 		// test version with no pawns
@@ -57,27 +69,27 @@ public class Board {
 //			board.put(col.getIndex(2), new Piece(new Location(col, 2), Color.BLUE, pieceType.EMPTY));
 //		}
 		
-		board.put(Column.A.getIndex(1), new Piece(new Location(Column.A, 1), Color.WHITE, pieceType.ROOK));
-		board.put(Column.H.getIndex(1), new Piece(new Location(Column.H, 1), Color.WHITE, pieceType.ROOK));
-		board.put(Column.B.getIndex(1), new Piece(new Location(Column.B, 1), Color.WHITE, pieceType.KNIGHT));
-		board.put(Column.G.getIndex(1), new Piece(new Location(Column.G, 1), Color.WHITE, pieceType.KNIGHT));
-		board.put(Column.C.getIndex(1), new Piece(new Location(Column.C, 1), Color.WHITE, pieceType.BISHOP));
-		board.put(Column.F.getIndex(1), new Piece(new Location(Column.F, 1), Color.WHITE, pieceType.BISHOP));
-		board.put(Column.D.getIndex(1), new Piece(new Location(Column.D, 1), Color.WHITE, pieceType.QUEEN));
-		board.put(Column.E.getIndex(1), new Piece(new Location(Column.E, 1), Color.WHITE, pieceType.KING));
+		board.put(Column.A.getOrigIndex(1), new Piece(new Location(Column.A, 1), Color.WHITE, pieceType.ROOK));
+		board.put(Column.H.getOrigIndex(1), new Piece(new Location(Column.H, 1), Color.WHITE, pieceType.ROOK));
+		board.put(Column.B.getOrigIndex(1), new Piece(new Location(Column.B, 1), Color.WHITE, pieceType.KNIGHT));
+		board.put(Column.G.getOrigIndex(1), new Piece(new Location(Column.G, 1), Color.WHITE, pieceType.KNIGHT));
+		board.put(Column.C.getOrigIndex(1), new Piece(new Location(Column.C, 1), Color.WHITE, pieceType.BISHOP));
+		board.put(Column.F.getOrigIndex(1), new Piece(new Location(Column.F, 1), Color.WHITE, pieceType.BISHOP));
+		board.put(Column.D.getOrigIndex(1), new Piece(new Location(Column.D, 1), Color.WHITE, pieceType.QUEEN));
+		board.put(Column.E.getOrigIndex(1), new Piece(new Location(Column.E, 1), Color.WHITE, pieceType.KING));
 		
 		//add empty's
 		for (Column col : Column.values()) 
 		{
 			for (int i = 3; i < 7; i++) 
 			{
-				board.put(col.getIndex(i), new Piece(new Location(col, i), Color.BLUE, pieceType.EMPTY));
+				board.put(col.getOrigIndex(i), new Piece(new Location(col, i), Color.BLUE, pieceType.EMPTY));
 			}
 		}
 		
 		drawBoard();
-		frame.setVisible(true);
 		updatePossibleMoves();
+		frame.setVisible(true);
 	}
 	
 	//updatePossibleMoves: uses the current board to set its piece's with the right array of possibleMoves,
@@ -118,12 +130,24 @@ public class Board {
 	
 	private void drawPossibleMoves(ArrayList<Location> possibleMoves)
 	{
-		for (Location loc : possibleMoves) {
-			board.get(loc.col.getIndex(loc.row)).isPossible = true;
+//		for (Location loc : possibleMoves) 
+//		{
+//			board.get(loc.col.getOrigIndex(loc.row)).isPossible = true;
+//		}
+		for (int i = 0; i < board.size(); i ++)
+		{
+			for (int j = 0; j < possibleMoves.size(); j++)
+			{
+				if (board.get(i).equalsCoord (possibleMoves.get(j).col.getX(), possibleMoves.get(j).row))
+				{
+					board.get(i).isPossible = true;
+				}
+			}
 		}
-		updateBoardVisual();
+		
+		updateBoardVisual();	
 	}
-	
+
 	private void clearMovesVisual()
 	{
 		for (Piece p : board.values()) {
@@ -203,7 +227,8 @@ public class Board {
 				button.addImage(img);
 				break;
 			case EMPTY: 
-				button = new ButtonExtend(p.location.col + "" + p.location.row);
+//				button = new ButtonExtend(p.location.col + "" + p.location.row + "" + p.index);
+				button = new ButtonExtend(""+ p.index);
 				break;
 			default: //case null
 				System.out.println("Should never get here"); //because we handle every situation already
@@ -270,12 +295,12 @@ public class Board {
 			if(board.get(indexOf).type == pieceType.EMPTY || board.get(indexOf).color != movingPiece.color)
 			{
 				destinationPiece = board.get(indexOf);
-				isSecond = false;
 				boolean isItLegal = movingPiece.isLegal(destinationPiece, board);
 				System.out.println(movingPiece.possibleMoves);
 				System.out.println("result: " + isItLegal + "\n");
 				if (isItLegal)
 				{
+					isSecond = false;
 					System.out.println("moving to " + destinationPiece.type + "(" + 
 							destinationPiece.location.col + "" + destinationPiece.location.row+")");
 					movePiece();
@@ -292,7 +317,10 @@ public class Board {
 			}
 			else
 			{
-				isSecond = false;
+				clearMovesVisual ();
+				movingPiece = board.get(indexOf); 
+				movingPiece.possibleMoves = movingPiece.setPossibleMovesArray(board);
+				drawPossibleMoves(movingPiece.possibleMoves);
 				System.out.println("can't move to your own piece.");
 				return;
 			}
@@ -327,6 +355,16 @@ public class Board {
     {
     	public void actionPerformed(ActionEvent e) 
 		{			
+    		System.out.println(e.getActionCommand());
+    		if (e.getActionCommand().equals("new game"))
+    		{
+    			System.out.println("new game");
+    			setDefaultBoard ();
+    			drawPossibleMoves (movingPiece.possibleMoves);
+    			clearMovesVisual();
+    			return;
+    		}
+    	
     		buttonPressedLogic(Integer.parseInt(e.getActionCommand()));
 		}	
     }

@@ -22,9 +22,9 @@ public enum Column {
 	//returns the index of the row number and column (this) referenced.
 	// IMPORTANT: int row refers to the row numbers being ordered in decending order
 	// i.e 8 - 1 up to down
-	public int getIndex(int row)
+	public int getOrigIndex(int row)
 	{
-		return ((8 - row) * 8) + this.getX();	
+		return ((8 - row) * 8) + this.getX();	 // wrong. the index doesnt stay in order as of now
 	}
 	
 	

@@ -16,7 +16,7 @@ public class Piece {
 		this.color  = color;
 		this.type = type;
 		this.location = location;
-		this.index = Index();
+		this.index = origIndex();
 		this.isPossible = false;
 	}
 	
@@ -76,7 +76,7 @@ public class Piece {
 					p2 = brd.get(i);
 				}
 			}
-			if (p1!= null && p2!=null && p1.type == pieceType.EMPTY && p2.type == pieceType.EMPTY)
+			if (p1 != null && p2 !=null && p1.type == pieceType.EMPTY && p2.type == pieceType.EMPTY)
 			{
 				arr.add (new Location (p2.location.col, p2.location.row));
 			}
@@ -652,12 +652,15 @@ public class Piece {
 	public HashMap<Integer,Piece> switchPieces(Piece destinationPiece, HashMap<Integer,Piece> brd) 
 	{
 		Location movTemp = new Location (this.location.col, this.location.row);
+//		int i = this.index;
 		
 		this.location.col = destinationPiece.location.col;
 		this.location.row = destinationPiece.location.row;
+//		this.index = destinationPiece.index;
 		
 		destinationPiece.location.col = movTemp.col;
 		destinationPiece.location.row = movTemp.row;
+//		destinationPiece.index = i;
 		
 		if (destinationPiece.color != Color.BLUE)
 		{
@@ -669,9 +672,9 @@ public class Piece {
 	}
 	
 	//returns the index of this piece
-	private int Index() 
+	private int origIndex() 
 	{
-		return this.location.col.getIndex(this.location.row);
+		return this.location.col.getOrigIndex(this.location.row);
 	}
 	
 	// prints out the index in array (which is converted to an 
@@ -698,7 +701,7 @@ public class Piece {
 	}
 	
 	//POLYMORPH returns true if this and comparable have equal x and y's
-	public boolean equalsCoord(Piece comparable)
+	public boolean equalsCoord (Piece comparable)
 	{
 		return (this.location.col.getX() == comparable.location.col.getX() && this.location.row == comparable.location.row);
 	}
