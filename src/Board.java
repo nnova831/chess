@@ -33,14 +33,22 @@ public class Board {
 		movingPiece = null;
 		destinationPiece = null;
 		MenuBar menuBar = new MenuBar ();
-			Menu file = new Menu ("file");
-				MenuItem newGame = new MenuItem ("new game");
+			Menu file = new Menu ("File");
+				MenuItem newGame = new MenuItem ("New Game");
 				newGame.addActionListener(new EndingListener ()); 
 		file.add(newGame);
 		menuBar.add(file);
 		frame.setMenuBar(menuBar);
 	}
-			
+	
+	private void resetBoard ()
+	{
+		isSecond = false;
+		setDefaultBoard ();
+		drawPossibleMoves (new ArrayList <>());
+		clearMovesVisual();
+	}
+	
 	//setDefaultBoard: takes arraylist of the board and clears it, then add's the default start to the game
 	private void setDefaultBoard(){
 		board = new HashMap<>();
@@ -317,11 +325,11 @@ public class Board {
 			}
 			else
 			{
+				System.out.println("Can't move to your own piece.");
 				clearMovesVisual ();
 				movingPiece = board.get(indexOf); 
 				movingPiece.possibleMoves = movingPiece.setPossibleMovesArray(board);
 				drawPossibleMoves(movingPiece.possibleMoves);
-				System.out.println("can't move to your own piece.");
 				return;
 			}
 		}
@@ -355,13 +363,10 @@ public class Board {
     {
     	public void actionPerformed(ActionEvent e) 
 		{			
-    		System.out.println(e.getActionCommand());
-    		if (e.getActionCommand().equals("new game"))
+    		if (e.getActionCommand().equalsIgnoreCase("new game"))
     		{
-    			System.out.println("new game");
-    			setDefaultBoard ();
-    			drawPossibleMoves (movingPiece.possibleMoves);
-    			clearMovesVisual();
+    			System.out.println(e.getActionCommand());
+    			resetBoard();
     			return;
     		}
     	
