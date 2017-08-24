@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
+import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class Board {
 	private Piece movingPiece;
 	private Piece destinationPiece;
 	private boolean isSecond = false;
+	private boolean darkMode = false;
 	Color turn;
 	
 	public static void main(String[] args) {		
@@ -27,6 +29,7 @@ public class Board {
 	}
 	
 	public Board() {
+		
 		frame = new JFrame ("Chess");
 		frame.setSize(WIDTH, HEIGHT + OFFSETHEIGHT);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,10 +38,20 @@ public class Board {
 		MenuBar menuBar = new MenuBar ();
 			Menu file = new Menu ("File");
 				MenuItem newGame = new MenuItem ("New Game");
-				newGame.addActionListener(new EndingListener ()); 
+					newGame.addActionListener(new EndingListener ()); 
+				MenuItem undo = new MenuItem ("Undo");
+					undo.addActionListener(new EndingListener ()); 
+				MenuItem darkChess = new MenuItem ("Dark Chess");
+					darkChess.addActionListener(new EndingListener ()); 
+		
+		ButtonExtend victoryScreen = new ButtonExtend ( " wins!");
+		frame.add(victoryScreen);
 		file.add(newGame);
+		file.add(undo);
+		file.add(darkChess);
 		menuBar.add(file);
 		frame.setMenuBar(menuBar);
+		
 	}
 	
 	private void resetBoard ()
@@ -152,7 +165,6 @@ public class Board {
 				}
 			}
 		}
-		
 		updateBoardVisual();	
 	}
 
@@ -178,71 +190,85 @@ public class Board {
     	}
     	else
     	{
-			switch (p.type)
-			{
-			case PAWN:
-				button = new ButtonExtend();
-				if(p.colorToString() == "WHITE"){
-					img = "White Pawn.png";
-				}else{
-					img = "Black Pawn.png";
+    		button = new ButtonExtend();
+    		
+    		if (turn != p.color && p.type != pieceType.EMPTY && darkMode == true)
+    		{
+    			if (p.color == Color.WHITE)
+    			{
+    				img = "White Unknown.png";
+    				button.addImage (img);
+    			}
+    			else
+    			{
+    				img = "Black Unknown.png";
+    				button.addImage (img);
+    			}
+    		}
+    		else
+    		{
+				switch (p.type)
+				{
+				case PAWN:
+					if(p.colorToString() == "WHITE")
+					{
+						img = "White Pawn.png";
+					}
+					else
+					{
+						img = "Black Pawn.png";
+					}
+					button.addImage (img);
+					break;
+				case KNIGHT:
+					if(p.colorToString() == "WHITE"){
+						img = "White Knight.png";
+					}else{
+						img = "Black Knight.png";
+					}
+					button.addImage (img);
+					break;
+				case BISHOP:
+					if(p.colorToString() == "WHITE"){
+						img = "White Bishop.png";
+					}else{
+						img = "Black Bishop.png";
+					}
+					button.addImage (img);
+					break;
+				case ROOK:
+					if(p.colorToString() == "WHITE"){
+						img = "White Rook.png";
+					}else{
+						img = "Black Rook.png";
+					}
+					button.addImage (img);
+					break;
+				case QUEEN:
+					if(p.colorToString() == "WHITE"){
+						img = "White Queen.png";
+					}else{
+						img = "Black Queen.png";
+					}
+					button.addImage (img);
+					break;
+				case KING:
+					if(p.colorToString() == "WHITE"){
+						img = "White King.png";
+					}else{
+						img = "Black King.png";
+					}
+					button.addImage(img);
+					break;
+				case EMPTY: 
+	//				button = new ButtonExtend(p.location.col + "" + p.location.row + "" + p.index);
+					break;
+				default: //case null
+					System.out.println("Should never get here"); //because we handle every situation already
+					button = new ButtonExtend();
+		    		break;
 				}
-				button.addImage (img);
-				break;
-			case KNIGHT:
-				button = new ButtonExtend();
-				if(p.colorToString() == "WHITE"){
-					img = "White Knight.png";
-				}else{
-					img = "Black Knight.png";
-				}
-				button.addImage (img);
-				break;
-			case BISHOP:
-				button = new ButtonExtend();
-				if(p.colorToString() == "WHITE"){
-					img = "White Bishop.png";
-				}else{
-					img = "Black Bishop.png";
-				}
-				button.addImage (img);
-				break;
-			case ROOK:
-				button = new ButtonExtend();
-				if(p.colorToString() == "WHITE"){
-					img = "White Rook.png";
-				}else{
-					img = "Black Rook.png";
-				}
-				button.addImage (img);
-				break;
-			case QUEEN:
-				button = new ButtonExtend();
-				if(p.colorToString() == "WHITE"){
-					img = "White Queen.png";
-				}else{
-					img = "Black Queen.png";
-				}
-				button.addImage (img);
-				break;
-			case KING:
-				button = new ButtonExtend();
-				if(p.colorToString() == "WHITE"){
-					img = "White King.png";
-				}else{
-					img = "Black King.png";
-				}
-				button.addImage(img);
-				break;
-			case EMPTY: 
-//				button = new ButtonExtend(p.location.col + "" + p.location.row + "" + p.index);
-				button = new ButtonExtend(""+ p.index);
-				break;
-			default: //case null
-				System.out.println("Should never get here"); //because we handle every situation already
-				button = new ButtonExtend();
-	    		break;
-			}
+    		}
     	}
     	
     	button.setPiece(p); //polymorphism of JButton for a button to hold a piece object
@@ -308,6 +334,10 @@ public class Board {
 				System.out.println("result: " + isItLegal + "\n");
 				if (isItLegal)
 				{
+					if (destinationPiece.type == pieceType.KING)
+					{
+						endGame (movingPiece.color);
+					}
 					isSecond = false;
 					System.out.println("moving to " + destinationPiece.type + "(" + 
 							destinationPiece.location.col + "" + destinationPiece.location.row+")");
@@ -322,6 +352,7 @@ public class Board {
 						turn = Color.WHITE;
 					}
 				}
+				updateBoardVisual ();
 			}
 			else
 			{
@@ -334,6 +365,8 @@ public class Board {
 			}
 		}
     }
+    
+    
     //movePiece: assumes class variables movingPiece and destinatinoPiece are both occupied
     //			 performs a switch piece move in the board, and updates the JFrame accordingly
     //			 also updates the board's piece's possible moves
@@ -362,14 +395,27 @@ public class Board {
 	private class EndingListener implements ActionListener
     {
     	public void actionPerformed(ActionEvent e) 
-		{			
-    		if (e.getActionCommand().equalsIgnoreCase("new game"))
+		{		
+    		System.out.println(e.getActionCommand());	
+    		if (e.getActionCommand().equalsIgnoreCase("new game")) // reset the board
     		{
-    			System.out.println(e.getActionCommand());
     			resetBoard();
     			return;
     		}
-    	
+    		if (e.getActionCommand().equalsIgnoreCase("undo"))     // undo move
+    		{
+    			movingPiece.switchPieces(destinationPiece, board);
+    			updateBoardVisual();
+    			turn = movingPiece.color;
+    			return;
+    		}
+    		if (e.getActionCommand().equalsIgnoreCase("dark chess")) // reset the board
+    		{
+    			darkMode = !darkMode;
+    			updateBoardVisual ();
+    			return;
+    		}
+    		
     		buttonPressedLogic(Integer.parseInt(e.getActionCommand()));
 		}	
     }
