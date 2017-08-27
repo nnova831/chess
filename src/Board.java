@@ -43,16 +43,20 @@ public class Board {
 					undo.addActionListener(new EndingListener ()); 
 				MenuItem darkChess = new MenuItem ("Dark Chess");
 					darkChess.addActionListener(new EndingListener ()); 
+				MenuItem refresh = new MenuItem ("Refresh");
+					refresh.addActionListener(new EndingListener ()); 
 		
 		ButtonExtend victoryScreen = new ButtonExtend ( " wins!");
 		frame.add(victoryScreen);
 		file.add(newGame);
 		file.add(undo);
 		file.add(darkChess);
+		file.add(refresh);
 		menuBar.add(file);
 		frame.setMenuBar(menuBar);
 		
 	}
+	
 	
 	private void resetBoard ()
 	{
@@ -143,7 +147,7 @@ public class Board {
 	}
     
     //updateBoard: called when a piece is switched: resets frame and redraws based on the HashMap
-	private void updateBoardVisual() 
+	private void updateBoardVisual()
 	{
 		frame.getContentPane().removeAll();
 		drawBoard();
@@ -298,6 +302,7 @@ public class Board {
 		{			
 			if(board.get(indexOf).type != pieceType.EMPTY)
 			{
+				System.out.println(board.get(indexOf).color + " / " + turn);
 				if (board.get(indexOf).color != turn)
 				{
 					System.out.println("That is Not Your Piece");
@@ -334,15 +339,14 @@ public class Board {
 				System.out.println("result: " + isItLegal + "\n");
 				if (isItLegal)
 				{
-					if (destinationPiece.type == pieceType.KING)
-					{
-						endGame (movingPiece.color);
-					}
+//					if (destinationPiece.type == pieceType.KING)
+//					{
+//						endGame (movingPiece.color);
+//					}
 					isSecond = false;
 					System.out.println("moving to " + destinationPiece.type + "(" + 
 							destinationPiece.location.col + "" + destinationPiece.location.row+")");
-					movePiece();
-					clearMovesVisual();
+					
 					if (turn == Color.WHITE)
 					{
 						turn = Color.BLACK;
@@ -351,6 +355,8 @@ public class Board {
 					{
 						turn = Color.WHITE;
 					}
+					movePiece();
+					clearMovesVisual();
 				}
 				updateBoardVisual ();
 			}
@@ -375,11 +381,18 @@ public class Board {
     	board = movingPiece.switchPieces(destinationPiece, board);
 		updateBoardVisual();
 		frame.setVisible(true);
+		if (destinationPiece.type == pieceType.KING)
+    	{
+//    		System.out.println(destinationPiece.colorToString() + " wins");
+    		resetBoard();
+//    		turn = Color.BLACK;
+    		return;
+    	}
 	}
-
+    
 	//toStringArray: prints out each piece in the current board
 	public String toStringArray()
-	{	
+	{
 		StringBuilder sb = new StringBuilder ();
 		for (Piece piece: board.values())
 	    {
@@ -413,6 +426,11 @@ public class Board {
     		{
     			darkMode = !darkMode;
     			updateBoardVisual ();
+    			return;
+    		}
+    		if (e.getActionCommand().equalsIgnoreCase("refresh"))
+    		{
+    			drawBoard();
     			return;
     		}
     		

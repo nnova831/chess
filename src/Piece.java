@@ -651,10 +651,6 @@ public class Piece {
 	//board where this piece moves to the destination piece.
 	public HashMap<Integer,Piece> switchPieces(Piece destinationPiece, HashMap<Integer,Piece> brd) 
 	{
-//		if (destinationPiece.type == pieceType.KING)
-//		{
-//			
-//		}
 		Location movTemp = new Location (this.location.col, this.location.row);
 //		int i = this.index;
 		
