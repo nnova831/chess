@@ -65,7 +65,8 @@ public class Piece {
 		}
 		// pawn double move
 		// (have to check the 2 locations in front and make sure they are empty
-		if (moving.location.row == 2 || moving.location.row == 7)
+		if (moving.location.row == 2 && moving.color == Color.WHITE
+				|| moving.location.row == 7 && moving.color == Color.BLACK)
 		{
 			Piece p1 = null;
 			Piece p2 = null;
@@ -80,7 +81,7 @@ public class Piece {
 					p2 = brd.get(i);
 				}
 			}
-			if (p1 != null && p2 !=null && p1.type == pieceType.EMPTY && p2.type == pieceType.EMPTY)
+			if (p1.type == pieceType.EMPTY && p2.type == pieceType.EMPTY)
 			{
 				arr.add (new Location (p2.location.col, p2.location.row));
 			}
@@ -113,6 +114,7 @@ public class Piece {
 		for (int i = 0; i < 64; i++)
 		{
 			Piece dest = brd.get(i);
+			// go through board, and check 8 surrounding locations.
 			if (dest.equalsCoord(movingPiece.location.col.getX() + 1, movingPiece.location.row + 2)     	
 			|| dest.equalsCoord(movingPiece.location.col.getX() + 2, movingPiece.location.row + 1)					
 			|| dest.equalsCoord(movingPiece.location.col.getX() + 1, movingPiece.location.row - 2)	
@@ -173,22 +175,6 @@ public class Piece {
 		NW = sortDiags (NW);
 		SE = sortDiags (SE);
 		SW = sortDiags (SW);
-//		for (int i = 0; i < NE.size(); i++)
-//		{
-//			System.out.println(NE.get(i).location.col +""+NE.get(i).location.row);
-//		}
-//		for (int i = 0; i < NW.size(); i++)
-//		{
-//			System.out.println(NW.get(i).location.col +""+NW.get(i).location.row);
-//		}
-//		for (int i = 0; i < SE.size(); i++)
-//		{
-//			System.out.println(SE.get(i).location.col +""+SE.get(i).location.row);
-//		}
-//		for (int i = 0; i < SW.size(); i++)
-//		{
-//			System.out.println(SW.get(i).location.col +""+SW.get(i).location.row);
-//		}
 		
 		for (int i = 0; i < NE.size(); i ++)
 		{
@@ -655,6 +641,14 @@ public class Piece {
 	//board where this piece moves to the destination piece.
 	public HashMap<Integer,Piece> switchPieces(Piece destinationPiece, HashMap<Integer,Piece> brd) 
 	{
+		if (this.type == pieceType.PAWN)
+		{
+			if ((this.color == Color.WHITE && destinationPiece.location.row == 8)
+				|| (this.color == Color.BLACK && destinationPiece.location.row == 1))
+			{
+				this.type = pieceType.QUEEN;
+			}
+		}
 		Location movTemp = new Location (this.location.col, this.location.row);
 //		int i = this.index;
 		
@@ -666,7 +660,6 @@ public class Piece {
 		destinationPiece.location.row = movTemp.row;
 //		destinationPiece.index = i;
 		
-		System.out.println(brd.toString());
 		if (destinationPiece.color != Color.BLUE)
 		{
 			System.out.println("REMOVED");
@@ -676,7 +669,8 @@ public class Piece {
 			brd.put(destinationPiece.index, newPiece);			
 		}
 		
-		System.out.println(brd.toString());
+		
+		
 		return brd;
 	}
 	
