@@ -6,6 +6,7 @@ import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -20,7 +21,7 @@ public class Board {
 	private Piece movingPiece;
 	private Piece destinationPiece;
 	private boolean isSecond = false;
-	private boolean darkMode = false;
+	private boolean darkMode = true;
 	Color turn;
 	
 	public static void main(String[] args) {		
@@ -68,6 +69,11 @@ public class Board {
 	
 	//setDefaultBoard: takes arraylist of the board and clears it, then add's the default start to the game
 	private void setDefaultBoard(){
+		if (darkMode == true)
+		{
+			setRandomizedBoard ();
+			return;
+		}
 		board = new HashMap<>();
 		turn = Color.WHITE;
 				
@@ -80,7 +86,7 @@ public class Board {
 		board.put(Column.D.getOrigIndex(8), new Piece(new Location(Column.D, 8), Color.BLACK, pieceType.QUEEN));
 		board.put(Column.E.getOrigIndex(8), new Piece(new Location(Column.E, 8), Color.BLACK, pieceType.KING));
 		
-		// real version
+		// real version (pawns)
 		for (Column col : Column.values()) 
 		{
 			board.put(col.getOrigIndex(7), new Piece(new Location (col, 7), Color.BLACK, pieceType.PAWN));
@@ -103,6 +109,64 @@ public class Board {
 		board.put(Column.D.getOrigIndex(1), new Piece(new Location(Column.D, 1), Color.WHITE, pieceType.QUEEN));
 		board.put(Column.E.getOrigIndex(1), new Piece(new Location(Column.E, 1), Color.WHITE, pieceType.KING));
 		
+		//add empty's
+		for (Column col : Column.values()) 
+		{
+			for (int i = 3; i < 7; i++) 
+			{
+				board.put(col.getOrigIndex(i), new Piece(new Location(col, i), Color.BLUE, pieceType.EMPTY));
+			}
+		}
+		
+		drawBoard();
+		updatePossibleMoves();
+		frame.setVisible(true);
+	}
+	
+	
+	private void setRandomizedBoard()
+	{
+		board = new HashMap<>();
+		turn = Color.WHITE;
+		
+		ArrayList <pieceType> randBoard = new ArrayList <>();
+		randBoard.add(pieceType.KING);
+		randBoard.add(pieceType.QUEEN);
+		randBoard.add(pieceType.BISHOP);
+		randBoard.add(pieceType.BISHOP);
+		randBoard.add(pieceType.BISHOP);
+		randBoard.add(pieceType.KNIGHT);
+		randBoard.add(pieceType.KNIGHT);
+		randBoard.add(pieceType.KNIGHT);
+		randBoard.add(pieceType.ROOK);
+		randBoard.add(pieceType.ROOK);
+		randBoard.add(pieceType.ROOK);
+		randBoard.add(pieceType.ROOK);
+		randBoard.add(pieceType.PAWN);
+		randBoard.add(pieceType.PAWN);
+		randBoard.add(pieceType.PAWN);
+		randBoard.add(pieceType.PAWN);
+		
+		Collections.shuffle(randBoard);
+		
+		int c = 0;
+		for (Column col : Column.values()) 
+		{
+			board.put(col.getOrigIndex(8), new Piece(new Location (col, 8), Color.BLACK, randBoard.get(c)));
+			c ++;
+			board.put(col.getOrigIndex(7), new Piece(new Location (col, 7), Color.BLACK, randBoard.get(c)));
+			c ++;
+		}
+		
+		Collections.shuffle(randBoard);
+		c = 0;
+		for (Column col : Column.values()) 
+		{
+			board.put(col.getOrigIndex(2), new Piece(new Location (col, 2), Color.WHITE, randBoard.get(c)));
+			c++;
+			board.put(col.getOrigIndex(1), new Piece(new Location (col, 1), Color.WHITE, randBoard.get(c)));
+			c ++;
+		}
 		//add empty's
 		for (Column col : Column.values()) 
 		{
@@ -194,7 +258,7 @@ public class Board {
     	}
     	else
     	{
-    		button = new ButtonExtend();
+    		button = new ButtonExtend("" + p.index);
     		
     		if (turn != p.color && p.type != pieceType.EMPTY && darkMode == true)
     		{
@@ -383,9 +447,7 @@ public class Board {
 		frame.setVisible(true);
 		if (destinationPiece.type == pieceType.KING)
     	{
-//    		System.out.println(destinationPiece.colorToString() + " wins");
     		resetBoard();
-//    		turn = Color.BLACK;
     		return;
     	}
 	}
@@ -396,11 +458,11 @@ public class Board {
 		StringBuilder sb = new StringBuilder ();
 		for (Piece piece: board.values())
 	    {
-			sb.append("\n");
-			sb.append(board.get(piece.index).colorToString());
-	    	sb.append(" " + board.get(piece.index).type);
-	    	sb.append("("+board.get(piece.index).location.col + ", " + board.get(piece.index).location.row + ")");
-	    	sb.append(" i: " + piece.index);
+			sb.append ("\n");
+			sb.append (board.get(piece.index).colorToString());
+	    	sb.append (" " + board.get(piece.index).type);
+	    	sb.append ("("+board.get(piece.index).location.col + ", " + board.get(piece.index).location.row + ")");
+	    	sb.append (" i: " + piece.index);
 	    }
 		return sb.toString();
 	}

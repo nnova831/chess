@@ -11,7 +11,10 @@ public class Piece {
 	ArrayList <Location> possibleMoves = new ArrayList<>();
 	int index;
 	
-	public Piece (Location location, Color color, pieceType type)
+	// BELOW WILL CREATE A NEW PIECE IN ITS ORIGINAL
+	// LOCATION ON INDEX. MANUALLY CHANGE INDEX IF
+	// THERE IS AN ERROR (see switch pieces for ex)
+	public Piece (Location location, Color color, pieceType type) 	
 	{
 		this.color  = color;
 		this.type = type;
@@ -19,6 +22,7 @@ public class Piece {
 		this.index = origIndex();
 		this.isPossible = false;
 	}
+	
 	
 	//isLegal: takes a piece of destination and determines if this piece is allowed to make that move
   	public boolean isLegal(Piece dest, HashMap<Integer, Piece> b) {
@@ -662,12 +666,17 @@ public class Piece {
 		destinationPiece.location.row = movTemp.row;
 //		destinationPiece.index = i;
 		
+		System.out.println(brd.toString());
 		if (destinationPiece.color != Color.BLUE)
 		{
 			System.out.println("REMOVED");
 			brd.remove(destinationPiece.index);
-			brd.put(destinationPiece.index, new Piece (destinationPiece.location, Color.BLUE, pieceType.EMPTY));
+			Piece newPiece =  new Piece (destinationPiece.location, Color.BLUE, pieceType.EMPTY);
+			newPiece.index = destinationPiece.index;
+			brd.put(destinationPiece.index, newPiece);			
 		}
+		
+		System.out.println(brd.toString());
 		return brd;
 	}
 	
@@ -675,6 +684,11 @@ public class Piece {
 	private int origIndex() 
 	{
 		return this.location.col.getOrigIndex(this.location.row);
+	}
+	
+	public String toString()
+	{
+		return (type + "" + location + ", i = " + index);
 	}
 	
 	// prints out the index in array (which is converted to an 
