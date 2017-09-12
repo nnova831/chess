@@ -30,6 +30,8 @@ public class Board {
 	
 	public Board() {
 		
+		chessClient.run();
+		
 		frame = new JFrame ("Chess");
 		frame.setSize(WIDTH, HEIGHT + OFFSETHEIGHT);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
