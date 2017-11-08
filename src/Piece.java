@@ -51,6 +51,8 @@ public class Piece {
 			return setPawnArray (this, brd);
 		case QUEEN:
 			return setQueenArray (this, brd);
+		case KINGKNIGHT:
+			return setKingHorseArray (this, brd);
 		}
 		return null;
 	}
@@ -133,6 +135,44 @@ public class Piece {
 		return arr;
 	}
 
+	private ArrayList <Location> setKingHorseArray (Piece moving, HashMap<Integer, Piece> brd)
+	{
+		ArrayList<Location> arr = new ArrayList<>();
+		for (int i = 0; i < 64; i++)
+		{
+			Piece dest = brd.get(i);
+	  		if(Math.abs(moving.location.col.getX() - dest.location.col.getX()) <= 1 
+	  				&& Math.abs(moving.location.row - dest.location.row) <= 1)
+			{
+				if(dest.color != moving.color)
+				{
+					arr.add(new Location(dest.location.col, dest.location.row));
+				}
+			}
+		}
+		for (int i = 0; i < 64; i++)
+		{
+			Piece dest = brd.get(i);
+			// go through board, and check 8 surrounding locations.
+			if (dest.equalsCoord(moving.location.col.getX() + 1, moving.location.row + 2)     	
+			|| dest.equalsCoord(moving.location.col.getX() + 2, moving.location.row + 1)					
+			|| dest.equalsCoord(moving.location.col.getX() + 1, moving.location.row - 2)	
+			|| dest.equalsCoord(moving.location.col.getX() + 2, moving.location.row - 1)	
+			|| dest.equalsCoord(moving.location.col.getX() - 1, moving.location.row + 2)	
+			|| dest.equalsCoord(moving.location.col.getX() - 2, moving.location.row + 1)	
+			|| dest.equalsCoord(moving.location.col.getX() - 1, moving.location.row - 2)	
+			|| dest.equalsCoord(moving.location.col.getX() - 2, moving.location.row - 1))	
+			{
+				if (moving.color != dest.color)
+				{
+					arr.add(new Location(dest.location.col, dest.location.row));
+				}
+			}
+		}
+		return arr;
+	}
+
+
 	private ArrayList <Location> setBishopArray (Piece moving, HashMap <Integer, Piece> brd)
 	{
 		ArrayList <Location> arr = new ArrayList <>();
@@ -145,6 +185,20 @@ public class Piece {
 		for (int i = 0; i < 64; i ++)
 		{
 			Piece pDest = brd.get(i);
+			
+			int a = 1;
+			if (moving.color == Color.BLACK)
+			{
+				a *= -1;
+			}
+			// move 1 space forward, if it is empty
+			if (pDest.location.col.getX() == moving.location.col.getX() && pDest.location.row - moving.location.row == 1*a)
+			{
+				if (pDest.type == pieceType.EMPTY) {
+					arr.add(new Location (pDest.location));
+				}
+				
+			}
 			if (pDest.location.col.getX() - moving.location.col.getX() != 0 && pDest.location.row - moving.location.row != 0)
 			{
 				if ((double)(pDest.location.row - moving.location.row) / (pDest.location.col.getX() - moving.location.col.getX()) == 1)
@@ -246,6 +300,7 @@ public class Piece {
 				break;
 			}
 		}
+		
 		return arr;
 	}
   	
@@ -279,7 +334,7 @@ public class Piece {
 				{
 					Left.add(pDest);
 				}
-				else if (pDest.location.row < moving.location.row)
+				else if (pDest.location.col.getX() > moving.location.col.getX())
 				{
 					Right.add(pDest);
 				}
@@ -420,7 +475,7 @@ public class Piece {
 				{
 					W.add(pDest);
 				}
-				else if (pDest.location.row < moving.location.row)
+				else if (pDest.location.col.getX() > moving.location.col.getX())
 				{
 					E.add(pDest);
 				}
@@ -597,7 +652,7 @@ public class Piece {
 		}
 		return arr;
 	}
-
+	
 	// Doesnt work yet/ assume it does
   	private ArrayList<Piece> sortStraights (ArrayList <Piece> a) // 0: sort x    1:sort y
   	{
@@ -639,7 +694,7 @@ public class Piece {
 
 	//switchPiece: takes the destination piece and an hashmap of the board and returns a 
 	//board where this piece moves to the destination piece.
-	public HashMap<Integer,Piece> switchPieces(Piece destinationPiece, HashMap<Integer,Piece> brd) 
+	public HashMap<Integer,Piece> switchPieces (Piece destinationPiece, HashMap<Integer,Piece> brd) 
 	{
 		if (this.type == pieceType.PAWN)
 		{

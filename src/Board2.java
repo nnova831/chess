@@ -11,7 +11,7 @@ import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
-public class Board {
+public class Board2 {
 	
 	private static HashMap<Integer, Piece> board;
 	private int WIDTH = 900;
@@ -29,11 +29,11 @@ public class Board {
 	
 	
 	public static void main(String[] args) {		
-		Board b = new Board();
+		Board2 b = new Board2();
 		b.setDefaultBoard();
 	}
 	
-	public Board() {
+	public Board2() {
 		
 		frame = new JFrame ("Chess");
 		frame.setSize(WIDTH, HEIGHT + OFFSETHEIGHT);
@@ -73,7 +73,7 @@ public class Board {
 	
 	//setDefaultBoard: takes arraylist of the board and clears it, then add's the default start to the game
 	public void setDefaultBoard(){
-		yourColor = Color.BLACK;
+		yourColor = Color.WHITE;
 		if (darkMode == true)
 		{
 			setRandomizedBoard ();
@@ -81,6 +81,7 @@ public class Board {
 		}
 		board = new HashMap<>();
 		turn = Color.WHITE;
+		
 				
 		board.put(Column.A.getOrigIndex(8), new Piece(new Location(Column.A, 8), Color.BLACK, pieceType.ROOK));
 		board.put(Column.H.getOrigIndex(8), new Piece(new Location(Column.H, 8), Color.BLACK, pieceType.ROOK));
@@ -268,6 +269,7 @@ public class Board {
     		
     		if (yourColor != p.color && p.type != pieceType.EMPTY && darkMode == true)
     		{
+    			
     			if (yourColor == Color.BLACK)
     			{
     				img = "White Unknown.png";
@@ -373,15 +375,20 @@ public class Board {
 		button.setBorderPainted(true);
 		frame.add(button);
 	}
+
     
     private void buttonPressedLogic(int indexOf) //logic that runs when a piece or space on the board is clicked.
     {
 //    	System.out.println("Location: " + board.get(indexOf).location);
+    	
+    	
+    	
 		if (isSecond == false) // first click
 		{			
 			if (!yourColor.equals(turn)) {
 				return;
 			}
+			
 			if(board.get(indexOf).type != pieceType.EMPTY)
 			{
 				if (board.get(indexOf).color != turn)
@@ -416,7 +423,11 @@ public class Board {
 			{
 				destinationPiece = board.get(indexOf);
 				boolean isItLegal = movingPiece.isLegal(destinationPiece, board);
-		
+				
+		    	
+
+//				System.out.println(movingPiece.possibleMoves);
+//				System.out.println("Legal?: " + isItLegal + "\n");
 				if (isItLegal)
 				{
 //					if (destinationPiece.type == pieceType.KING)
@@ -457,8 +468,8 @@ public class Board {
     //			 performs a switch piece move in the board, and updates the JFrame accordingly
     //			 also updates the board's piece's possible moves
     private void movePiece() 
-    {		
-    	board = movingPiece.switchPieces(destinationPiece, board);
+    {    	
+		board = movingPiece.switchPieces(destinationPiece, board);
 		frame.setVisible(true);
 		
 		STR = movingPiece.location.toString() + "" + destinationPiece.location.toString();
@@ -470,7 +481,7 @@ public class Board {
     	}
 	}
     
- // client uses this class to take a string the server sent them, and move the piece on their board
+ // server uses this class to take a string the client sent them, and move the piece on their board
     public void switchPieces (String comm) {
     	if (comm.length() != 4) {
     		System.out.println("Invalid Command in public Switch Pieces");
@@ -497,8 +508,8 @@ public class Board {
 		{
 			turn = Color.WHITE;
 		}
-    	
-    	updateBoardVisual();
+    	clearMovesVisual();
+    	updateBoardVisual ();
     	drawBoard();
     }
     
@@ -524,7 +535,7 @@ public class Board {
 //    		System.out.println("Command:   " + e.getActionCommand());	
 
     		int numComm = Integer.parseInt(e.getActionCommand());
-    	
+    		
 //    		System.out.println("STR: " + STR);
     		
     		if (e.getActionCommand().equalsIgnoreCase("new game")) // reset the board

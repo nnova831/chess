@@ -4,6 +4,10 @@ public class Location {
 	Column col;
 	int row;
 
+	public Location (Location c) {
+		col = c.col;
+		row = c.row;
+	}
 	public Location (Column c, int r)
 	{
 		col = c;
@@ -50,7 +54,7 @@ public class Location {
 	public String toString ()
 	{
 		StringBuilder sb = new StringBuilder ();
-		sb.append("(" + col + "" + row + ")");
+		sb.append("" + col + "" + row);
 		return sb.toString();
 	}
 	
